@@ -9,6 +9,3 @@ class Event:
 class EventExtractor:
     def extract(self, audio: Audio) -> list:
         pass
-
-    def segments_extract(self, segments: list) -> list:
-        pass

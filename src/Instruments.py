@@ -1,7 +1,8 @@
 from Music import Note
 from EventExtraction import Event
-from InstrumentGeneration import is_instrument
+from Architecture import SYSTEM
 
+@SYSTEM.is_instrument
 class Instrument:
     def __init__(self, event: Event, effects: list=[]):
         self.event = event

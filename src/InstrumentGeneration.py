@@ -12,8 +12,6 @@ class InstrumentGenerator:
     def generate(self, events: Event):
         pass
 
-def is_instrument(generator: InstrumentGenerator):
-    def add_to_generator(cl):
-        generator.add_instrument_class(cl)
+    def is_instrument(self, cl):
+        self.add_instrument_class(cl)
         return cl
-    return add_to_generator
