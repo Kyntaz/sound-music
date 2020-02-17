@@ -19,8 +19,8 @@ class System:
         self.audio_renderer = AudioRenderer()
         self.genetic_algorithm = GeneticAlgorithm()
     
-    def is_feature(self, func):
-        return self.feature_extractor.is_feature(func)
+    def is_feature(self, cl):
+        return self.feature_extractor.is_feature(cl)
 
     def is_instrument(self, cl):
         return self.instrument_generator.is_instrument(cl)

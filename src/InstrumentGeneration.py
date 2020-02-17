@@ -9,7 +9,7 @@ class InstrumentGenerator:
     def add_instrument_class(self, instrument):
         self.instrument_classes.append(instrument)
 
-    def generate(self, events: Event):
+    def generate(self, event: Event):
         pass
 
     def is_instrument(self, cl):

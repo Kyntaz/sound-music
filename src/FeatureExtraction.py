@@ -7,9 +7,12 @@ class FeatureExtractor:
     def add_feature(self, feature):
         self.features.append(feature)
 
-    def extract(self, audio: Audio) -> list:
-        return [feature(audio) for feature in self.features]
+    def extract(self, audio: Audio) -> dict:
+        extracted = {}
+        for feature in self.features:
+            extracted[type(feature).__name__.lower()] = feature.get(audio)
+        return extracted
 
-    def is_feature(self, func):
-        self.add_feature(func)
-        return func
+    def is_feature(self, cl):
+        self.add_feature(cl())
+        return cl

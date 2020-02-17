@@ -14,5 +14,5 @@ def process_dataset(s, l):
 def main():
     process_dataset(sys.argv[0], sys.argv[1])
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
