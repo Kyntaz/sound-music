@@ -35,6 +35,8 @@ class TimeSignature:
             chroma = lr.feature.chroma_cqt(audio.data)
             chroma = lr.util.sync(chroma, beats)
             audio.annotate("chroma", chroma)
+        else:
+            chroma = audio.annotations["chroma"]
         recurrence = lr.segment.recurrence_matrix(chroma, sym=True, mode="distance")
         beat_dur = 60 / tempo
         candidates = list(filter(lambda x: x * beat_dur < 3.5, range(3,13)))
@@ -51,6 +53,11 @@ class Scale:
             chroma = audio.annotations["chroma"]
         chroma_profile = np.amax(chroma, axis=1)
         avg = (chroma_profile.max() + chroma_profile.min()) / 2
-        scale = [i for i in range(len(chroma_profile)) if chroma_profile[i] > avg]
+        pot_scale = [i for i in range(len(chroma_profile)) if chroma_profile[i] > avg]
+        scale = [pot_scale[0]]
+        for i in range(1, len(pot_scale) - 1):
+            if not (pot_scale[i-1] + 1 == pot_scale[i] and pot_scale[i+1] - 1 == pot_scale[i] and pot_scale[i-1] in scale):
+                scale.append(pot_scale[i])
+        scale.append(pot_scale[-1])
         return scale
 
