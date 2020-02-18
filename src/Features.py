@@ -1,7 +1,7 @@
 from Architecture import SYSTEM
 from Audio import Audio
 import numpy as np
-import librosa
+import librosa as lr
 from utils.TimeSignature import get_time_signature
 
 @SYSTEM.is_feature
@@ -14,7 +14,7 @@ class Classification:
 class Tempo:
     def get(self, audio: Audio):
         if not "tempo" in audio.annotations:
-            tempo, beats = librosa.beat.beat_track(audio.data)
+            tempo, beats = lr.beat.beat_track(audio.data)
             audio.annotate("tempo", tempo)
             audio.annotate("beats", beats)
         else:
@@ -25,17 +25,32 @@ class Tempo:
 class TimeSignature:
     def get(self, audio: Audio):
         if not "beats" in audio.annotations:
-            tempo, beats = librosa.beat.beat_track(audio.data)
+            tempo, beats = lr.beat.beat_track(audio.data)
             audio.annotate("tempo", tempo)
             audio.annotate("beats", beats)
         else:
+            tempo = audio.annotations["tempo"]
             beats = audio.annotations["beats"]
         if not "chroma" in audio.annotations:
-            chroma = librosa.feature.chroma_cqt(audio.data)
-            chroma = librosa.util.sync(chroma, beats)
+            chroma = lr.feature.chroma_cqt(audio.data)
+            chroma = lr.util.sync(chroma, beats)
             audio.annotate("chroma", chroma)
-        recurrence = librosa.segment.recurrence_matrix(chroma, sym=True, mode="distance")
-        candidates = list(range(3, 13))
+        recurrence = lr.segment.recurrence_matrix(chroma, sym=True, mode="distance")
+        beat_dur = 60 / tempo
+        candidates = list(filter(lambda x: x * beat_dur < 3.5, range(3,13)))
         time_signatures = get_time_signature(recurrence, candidates)
         return candidates[np.argmax(time_signatures)]
+
+@SYSTEM.is_feature
+class Scale:
+    def get(self, audio: Audio):
+        if not "chroma" in audio.annotations:
+            chroma = lr.feature.chroma_cqt(audio.data)
+            audio.annotate("chroma", chroma)
+        else:
+            chroma = audio.annotations["chroma"]
+        chroma_profile = np.amax(chroma, axis=1)
+        avg = (chroma_profile.max() + chroma_profile.min()) / 2
+        scale = [i for i in range(len(chroma_profile)) if chroma_profile[i] > avg]
+        return scale
 
