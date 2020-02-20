@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "D:\\Stuff\\sound-music\\venv\\python.exe"
+    "python.pythonPath": "D:\\Stuff\\sound-music\\venv\\python.exe",
+    "python.autoComplete.extraPaths": ["./src"]
 }
