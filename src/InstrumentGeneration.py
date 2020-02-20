@@ -1,4 +1,5 @@
 from EventExtraction import Event
+import random
 
 
 class InstrumentGenerator:
@@ -10,7 +11,7 @@ class InstrumentGenerator:
         self.instrument_classes.append(instrument)
 
     def generate(self, event: Event):
-        pass
+        return random.choice(self.instrument_classes)(event)
 
     def is_instrument(self, cl):
         self.add_instrument_class(cl)

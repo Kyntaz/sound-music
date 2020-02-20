@@ -1,6 +1,7 @@
 from Music import Note
 from EventExtraction import Event
 from Architecture import SYSTEM
+import numpy as np
 
 @SYSTEM.is_instrument
 class Instrument:
@@ -19,5 +20,5 @@ class Instrument:
         self.normalize_volume(peak)
         self.normalize_pitch(freq)
 
-    def play(self, note: Note) -> Event:
-        return self.event
+    def play(self, note: Note) -> np.ndarray:
+        return self.event.data

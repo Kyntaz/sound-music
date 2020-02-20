@@ -1,14 +1,10 @@
 class Note:
-    def __init__(self, pitch_or_command, duration, intensity):
-        if isinstance(pitch_or_command, str):
-            self.command = pitch_or_command
-            self.pitch = 0
-        else:
-            self.command = ""
-            self.pitch = pitch_or_command
+    def __init__(self, pitch: float, duration: float, intensity: float, meta: dict):
+        self.pitch = pitch
         self.start = 0
         self.duration = duration
         self.intensity = intensity
+        self.meta = meta
 
 class Line:
     def __init__(self):
@@ -19,7 +15,7 @@ class Line:
     def set_cursor(self, cursor):
         self.cursor = cursor
 
-    def add_notes(self, notes):
+    def add_notes(self, notes: list):
         for note in notes:
             note.start = self.cursor
         self.notes += notes
@@ -29,6 +25,6 @@ class Piece:
     def __init__(self):
         self.lines = []
     
-    def add_line(self, line, instrument):
+    def add_line(self, line: Line, instrument):
         line.instrument = instrument
         self.lines += [line]
