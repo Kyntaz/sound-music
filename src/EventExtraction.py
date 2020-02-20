@@ -11,7 +11,7 @@ class Event:
 class EventExtractor:
     def extract(self, audio: Audio) -> list:
         onsets = lr.onset.onset_detect(audio.data, backtrack=True, units="samples")
-        events = [Event(audio.data[0, onsets[0]])]
+        events = [Event(audio.data[0:onsets[0]])]
         for i in range(len(onsets) - 1):
             events.append(Event(audio.data[onsets[i]:onsets[i+1]]))
         events.append(Event(audio.data[onsets[-1]:-1]))
