@@ -7,36 +7,23 @@ from utils.TimeSignature import get_time_signature
 @SYSTEM.is_feature
 class Classification:
     def get(self, audio: Audio):
-        try: audio.annotations["class"]
+        try: return audio.annotations["class"]
         except: return ""
 
 @SYSTEM.is_feature
 class Tempo:
     def get(self, audio: Audio):
-        if not "tempo" in audio.annotations:
-            tempo, beats = lr.beat.beat_track(audio.data)
-            audio.annotate("tempo", tempo)
-            audio.annotate("beats", beats)
-        else:
-            tempo = audio.annotations["tempo"]
+        tempo, _ = audio.cache("beat_track", \
+            lambda: lr.beat.beat_track(audio.data))
         return tempo
 
 @SYSTEM.is_feature
 class TimeSignature:
     def get(self, audio: Audio):
-        if not "beats" in audio.annotations:
-            tempo, beats = lr.beat.beat_track(audio.data)
-            audio.annotate("tempo", tempo)
-            audio.annotate("beats", beats)
-        else:
-            tempo = audio.annotations["tempo"]
-            beats = audio.annotations["beats"]
-        if not "chroma" in audio.annotations:
-            chroma = lr.feature.chroma_cqt(audio.data)
-            chroma = lr.util.sync(chroma, beats)
-            audio.annotate("chroma", chroma)
-        else:
-            chroma = audio.annotations["chroma"]
+        tempo, beats = audio.cache("beat_track", \
+            lambda: lr.beat.beat_track(audio.data))
+        chroma = audio.cache("chroma", \
+            lambda: lr.util.sync(lr.feature.chroma_cqt(audio.data), beats))
         recurrence = lr.segment.recurrence_matrix(chroma, sym=True, mode="distance")
         beat_dur = 60 / tempo
         candidates = list(filter(lambda x: x * beat_dur < 3.5, range(3,13)))
@@ -46,13 +33,12 @@ class TimeSignature:
 @SYSTEM.is_feature
 class Scale:
     def get(self, audio: Audio):
-        if not "chroma" in audio.annotations:
-            chroma = lr.feature.chroma_cqt(audio.data)
-            audio.annotate("chroma", chroma)
-        else:
-            chroma = audio.annotations["chroma"]
+        _, beats = audio.cache("beat_track", \
+            lambda: lr.beat.beat_track(audio.data))
+        chroma = audio.cache("chroma", \
+            lambda: lr.util.sync(lr.feature.chroma_cqt(audio.data), beats))
         chroma_profile = np.amax(chroma, axis=1)
-        avg = (chroma_profile.max() + chroma_profile.min()) / 2
+        avg = np.mean(chroma_profile)
         pot_scale = [i for i in range(len(chroma_profile)) if chroma_profile[i] > avg]
         scale = [pot_scale[0]]
         for i in range(1, len(pot_scale) - 1):

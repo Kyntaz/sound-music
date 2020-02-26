@@ -8,6 +8,13 @@ class Event:
         self.data = data
         self.type = ""
 
+    def get_pitch(self):
+        chroma = lr.cqt(self.data)
+        profile = np.mean(chroma, axis=1)
+        bins = lr.cqt_frequencies(84, lr.note_to_hz('C1'))
+        return lr.hz_to_midi(bins[np.argmax(profile)])
+
+
 class EventExtractor:
     def extract(self, audio: Audio) -> list:
         onsets = lr.onset.onset_detect(audio.data, backtrack=True, units="samples")
@@ -16,7 +23,7 @@ class EventExtractor:
             events.append(Event(audio.data[onsets[i]:onsets[i+1]]))
         events.append(Event(audio.data[onsets[-1]:-1]))
         for event in events: self.classify(event)
-        return events
+        return random.choices(events, k=5)
 
     def classify(self, event: Event):
         event.type = random.choice(["melodic", "textural", "percussive"])

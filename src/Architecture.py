@@ -25,7 +25,7 @@ class System:
     def is_instrument(self, cl):
         return self.instrument_generator.is_instrument(cl)
 
-    def process(self, audio: Audio):
+    def process(self, audio: Audio, out: str):
         print("Starting processing...")
         print("Segmenting audio...")
         segments = self.audio_segmenter.segment(audio)
@@ -49,7 +49,8 @@ class System:
         piece, score = self.genetic_algorithm.ga(pieces)
         print("Genetic algorithm completed with score {}.".format(score))
         print("Rendering audio...")
-        self.audio_renderer.render(piece)
+        output = self.audio_renderer.render(piece, audio.smpRt, out)
         print("Processing done!")
+        return output
 
 SYSTEM = System()

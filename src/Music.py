@@ -1,5 +1,5 @@
 class Note:
-    def __init__(self, pitch: float, duration: float, intensity: float, meta: dict):
+    def __init__(self, pitch: float, duration: float, intensity: float, meta: dict={}):
         self.pitch = pitch
         self.start = 0
         self.duration = duration
