@@ -25,7 +25,7 @@ class InstrumentGenerator:
                 r_events.append(event)
             except: traceback.print_exc()
         clusters.fit(feats)
-        instruments = [self.instrument_classes[0]() for _ in range(clusters.n_clusters_)]
+        instruments = [random.choice(self.instrument_classes)() for _ in range(clusters.n_clusters_)]
         for i,c in enumerate(clusters.labels_):
             instruments[c].add_event(r_events[i])
         instruments = list(filter(lambda inst: self.validate_instrument(inst), instruments))

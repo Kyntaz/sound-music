@@ -25,6 +25,6 @@ class Piece:
     def __init__(self):
         self.lines = []
     
-    def add_line(self, line: Line, instrument):
+    def add_line(self, line: Line, instrument=None):
         line.instrument = instrument
         self.lines += [line]
