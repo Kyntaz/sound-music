@@ -1,3 +1,3 @@
 from SoundMusic.main import *
 import SoundMusic.utils.MidiConvert
-import SoundMusic.alt.MidiSystem
+import SoundMusic.alt.Midi

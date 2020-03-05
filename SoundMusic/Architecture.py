@@ -7,6 +7,7 @@ from SoundMusic.MotifComposition import MotifComposer
 from SoundMusic.Arranging import Arranger
 from SoundMusic.AudioRendering import AudioRenderer
 from SoundMusic.GeneticAlgorithm import GeneticAlgorithm
+import SoundMusic.utils.Exceptions as exceptions
 
 class System:
     def __init__(self):
@@ -37,7 +38,7 @@ class System:
         events = sum([self.event_extractor.extract(audio) for segment in segments], [])
         print("Extracted {} events.".format(len(events)))
         print("Generating instruments...")
-        instruments = self.instrument_generator.generate(events)
+        instruments = self.instrument_generator.generate(events, 5)
         print("Generated {} instruments.".format(len(instruments)))
         print("Generating motifs...")
         motifs = sum([self.motif_composer.compose(feature, instruments) for feature in features], [])
@@ -58,8 +59,7 @@ class System:
             "instruments": instruments,
             "motifs": motifs,
             "pieces": pieces,
-            "piece": piece
+            "piece": piece,
+            "exception": exceptions.get_exceptions()
         }
         return (output, debug)
-
-SYSTEM = System()

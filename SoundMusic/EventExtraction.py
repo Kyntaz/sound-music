@@ -2,6 +2,8 @@ from SoundMusic.Audio import Audio
 import numpy as np
 import librosa as lr
 import random
+import SoundMusic.utils.Stats as stats
+from pysndfx import AudioEffectsChain as Fx
 
 class Event:
     def __init__(self, data: np.array):
@@ -9,10 +11,20 @@ class Event:
         self.type = ""
 
     def get_pitch(self):
+        mdata = (
+            Fx()
+            .highpass(100)
+        )(self.data)
+        spect = lr.amplitude_to_db(np.abs(lr.stft(mdata)))
+        profile = np.mean(spect, axis=1)
+        bins = lr.fft_frequencies()
+        return round(lr.hz_to_midi(stats.mode(bins, profile)), 2)
+    
+    def get_purity(self):
         spect = lr.amplitude_to_db(np.abs(lr.stft(self.data)))
         profile = np.mean(spect, axis=1)
         bins = lr.fft_frequencies()
-        return round(lr.hz_to_midi(bins[np.argmax(profile)]), 2)
+        return stats.std(bins, profile)
 
 class EventExtractor:
     def extract(self, audio: Audio) -> list:
@@ -29,4 +41,10 @@ class EventExtractor:
         if len(data) / smpRt >= 0.2: events.append(Event(data))
 
     def classify(self, event: Event):
-        event.type = random.choice(["melodic", "textural", "percussive"])
+        purity = event.get_purity()
+        if purity < 3100:
+            event.type = "melodic"
+        elif purity < 3200:
+            event.type = "textural"
+        else:
+            event.type = "percussive"

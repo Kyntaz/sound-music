@@ -6,19 +6,21 @@ import soundfile as sf
 from pysndfx import AudioEffectsChain as Fx
 import warnings
 import traceback
+import SoundMusic.utils.Exceptions as exceptions
 
 class AudioRenderer:
     def render(self, piece: Piece, smpRt: int, out: str):
         wave = np.array([])
         for j,line in enumerate(piece.lines):
-            print(f"Rendering line {j+1} of {len(piece.lines)}.")
+            line_wave = np.array([])
             for i,note in enumerate(line.notes):
-                print(f"Rendering at {round(i / len(line.notes) * 100, 2)}%")
+                print(f"Rendering line {j+1} of {len(piece.lines)}. Rendering at {round((i+1) / len(line.notes) * 100, 2)}% ({exceptions.n_exceptions()} exceptions)     ", end='\r')
                 try:
                     note_wave = line.instrument.play(note, smpRt)
-                    wave = _join_arrays(wave, note_wave)
-                except:
-                    traceback.print_exc()
+                    line_wave = _join_arrays(line_wave, note_wave)
+                except Exception as e:
+                    exceptions.save_exception(e)
+            wave = _join_arrays(wave, line_wave)
         assert len(wave) > 0
         wave = (
             Fx()
@@ -26,6 +28,7 @@ class AudioRenderer:
             .reverb()
         )(wave)
         sf.write(out, wave, smpRt, subtype='PCM_24')
+        print("\nDone Rendering.")
         return Audio(wave, smpRt)
 
 def _join_arrays(a1: np.ndarray, a2: np.ndarray):

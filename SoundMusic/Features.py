@@ -1,23 +1,19 @@
-from SoundMusic.Architecture import SYSTEM
 from SoundMusic.Audio import Audio
 import numpy as np
 import librosa as lr
 from SoundMusic.utils.TimeSignature import get_time_signature
 
-@SYSTEM.is_feature
 class Classification:
     def get(self, audio: Audio):
         try: return audio.annotations["class"]
         except: return ""
 
-@SYSTEM.is_feature
 class Tempo:
     def get(self, audio: Audio):
         tempo, _ = audio.cache("beat_track", \
             lambda: lr.beat.beat_track(audio.data))
         return tempo
 
-@SYSTEM.is_feature
 class TimeSignature:
     def get(self, audio: Audio):
         tempo, beats = audio.cache("beat_track", \
@@ -30,7 +26,6 @@ class TimeSignature:
         time_signatures = get_time_signature(recurrence, candidates)
         return candidates[np.argmax(time_signatures)]
 
-@SYSTEM.is_feature
 class Scale:
     def get(self, audio: Audio):
         _, beats = audio.cache("beat_track", \
@@ -48,3 +43,9 @@ class Scale:
         scale.append(pot_scale[-1])
         return scale
 
+all_features = [
+    Classification,
+    Tempo,
+    TimeSignature,
+    Scale,
+]

@@ -1,3 +1,5 @@
+import math
+
 class Note:
     def __init__(self, pitch: float, duration: float, intensity: float, meta: dict={}):
         self.pitch = pitch
@@ -20,6 +22,14 @@ class Line:
             note.start = self.cursor
         self.notes += notes
         self.cursor += max([note.duration for note in notes])
+
+    def range(self):
+        s = math.inf
+        b = 0
+        for note in self.notes:
+            s = min(s, note.pitch)
+            b = max(b, note.pitch)
+        return (s,b)
 
 class Piece:
     def __init__(self):
