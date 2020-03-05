@@ -44,8 +44,6 @@ class MelodicSample(IInstrument):
             .highpass(lr.midi_to_hz(note.pitch))
         )(wave)
         wave = envl.apply(wave, envl.adsr(len(wave)))
-        pad = [0] * round(note.start*smpRt)
-        wave = np.concatenate((np.array(pad), wave), axis=0)
         return wave
 
     def range(self):
@@ -89,8 +87,6 @@ class Oscillator(IInstrument):
             .lowpass(2000)
         )(wave)
         wave = envl.apply(wave, envl.adsr(len(wave)))
-        pad = [0] * round(note.start*smpRt)
-        wave = np.concatenate((np.array(pad), wave), axis=0)
         return wave
 
 all_instruments = [
