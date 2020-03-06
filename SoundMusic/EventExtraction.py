@@ -3,6 +3,7 @@ import numpy as np
 import librosa as lr
 import random
 import SoundMusic.utils.Stats as stats
+from SoundMusic.utils.Wave import get_strong_freq
 from pysndfx import AudioEffectsChain as Fx
 
 class Event:
@@ -11,14 +12,7 @@ class Event:
         self.type = ""
 
     def get_pitch(self):
-        mdata = (
-            Fx()
-            .highpass(100)
-        )(self.data)
-        spect = lr.amplitude_to_db(np.abs(lr.stft(mdata)))
-        profile = np.mean(spect, axis=1)
-        bins = lr.fft_frequencies()
-        return round(lr.hz_to_midi(stats.mode(bins, profile)), 2)
+        return get_strong_freq(self.data)
     
     def get_purity(self):
         spect = lr.amplitude_to_db(np.abs(lr.stft(self.data)))

@@ -5,8 +5,10 @@ import numpy as np
 from pysndfx import AudioEffectsChain as Fx
 import librosa as lr
 import math
-from math import sin, pi, floor
+from math import sin, pi, floor, ceil
+from SoundMusic.utils.Random import maybe
 import random
+from SoundMusic.utils.Wave import get_strong_freq, stitch_nwaves
 
 class IInstrument:
     def add_event(self, event: Event): raise NotImplementedError()
@@ -43,7 +45,7 @@ class MelodicSample(IInstrument):
             .tempo(ratio)
             .highpass(lr.midi_to_hz(note.pitch))
         )(wave)
-        wave = envl.apply(wave, envl.adsr(len(wave)))
+        wave = envl.adsr(len(wave))(wave)
         return wave
 
     def range(self):
@@ -59,7 +61,7 @@ class Oscillator(IInstrument):
         self.sample = None
     
     def add_event(self, event: Event):
-        self.sample = event.data
+        if maybe(0.5): self.sample = event.data
 
     def play(self, note: Note, smpRt: int):
         b_wave = np.array([])
@@ -86,10 +88,67 @@ class Oscillator(IInstrument):
             .highpass(100)
             .lowpass(2000)
         )(wave)
-        wave = envl.apply(wave, envl.adsr(len(wave)))
+        wave = envl.adsr(len(wave))(wave)
         return wave
+
+class Granulator(IInstrument):
+    def __init__(self):
+        self.grans = []
+        self.size = 300
+        self.smoothing = 10
+        self.limit = 100
+        self.break_limit = 5
+        self.gran_len = self.size + self.smoothing
+        self.cached_range = None
+
+    def add_event(self, event):
+        n_grans = len(event.data) / self.gran_len
+        grans = np.array_split(event.data, n_grans)
+        self.grans += grans
+
+    def gen_wave(self, dur, smpRt):
+        n_grans = ceil(math.floor(dur * smpRt / self.size))
+        grans = random.choices(self.grans, k=n_grans)
+        random.shuffle(grans)
+        return stitch_nwaves(grans, self.smoothing)
+        
+    def play(self, note: Note, smpRt):
+        wave = None
+        shift = math.inf
+        for _ in range(self.limit):
+            twave = self.gen_wave(note.duration, smpRt)
+            tc_pitch = get_strong_freq(twave)
+            if tc_pitch == - math.inf: continue
+            tshift = note.pitch - tc_pitch
+            if abs(tshift) < abs(shift):
+                wave = twave
+                shift = tshift
+            if abs(shift) < 30: break
+        wave = (
+            Fx()
+            .pitch(shift * 100)
+            .highpass(lr.midi_to_hz(note.pitch))
+        )(wave)
+        wave = envl.adsr(len(wave))(wave)
+        return wave
+
+    def range(self):
+        if self.cached_range == None:
+            s = math.inf
+            b = 0
+            r = 0
+            for _ in range(self.limit):
+                p = get_strong_freq(self.gen_wave(random.uniform(0.5, 1), 22050))
+                if p == - math.inf: continue
+                if s < p < b: r += 1
+                if r > self.break_limit: break
+                s = min(s, p)
+                b = max(b, p)
+            self.cached_range = (s,b)
+        return self.cached_range
 
 all_instruments = [
     MelodicSample,
     Oscillator,
+    Granulator,
 ]

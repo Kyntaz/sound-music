@@ -54,6 +54,7 @@ class MidiSystem(System):
                 if dd < d:
                     d = dd
                     b_instrument = instrument
+                if d == 0: break
             line.instrument = b_instrument
         
         print("Rendering the audio.")

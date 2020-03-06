@@ -7,6 +7,7 @@ from pysndfx import AudioEffectsChain as Fx
 import warnings
 import traceback
 import SoundMusic.utils.Exceptions as exceptions
+from SoundMusic.utils.Wave import join_waves
 
 class AudioRenderer:
     def render(self, piece: Piece, smpRt: int, out: str):
@@ -19,10 +20,11 @@ class AudioRenderer:
                     pad = pad = [0] * round(note.start*smpRt)
                     note_wave = line.instrument.play(note, smpRt)
                     note_wave = np.concatenate((pad, note_wave))
-                    line_wave = _join_arrays(line_wave, note_wave)
+                    line_wave = join_waves(line_wave, note_wave)
                 except Exception as e:
+                    #traceback.print_exc()
                     exceptions.save_exception(e)
-            wave = _join_arrays(wave, line_wave)
+            wave = join_waves(wave, line_wave)
         assert len(wave) > 0
         wave = (
             Fx()
@@ -32,10 +34,3 @@ class AudioRenderer:
         sf.write(out, wave, smpRt, subtype='PCM_24')
         print("\nDone Rendering.")
         return Audio(wave, smpRt)
-
-def _join_arrays(a1: np.ndarray, a2: np.ndarray):
-    if len(a1) < len(a2):
-        a1 = np.concatenate((a1, [0]*(len(a2) - len(a1))))
-    elif len(a1) > len(a2):
-        a2 = np.concatenate((a2, [0]*(len(a1) - len(a2))))
-    return a1 + a2
