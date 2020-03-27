@@ -53,3 +53,13 @@ class Envelope(IWave):
             (r[0]+s[0]+d[0]+a[0], r[1])
         ]
         return Envelope(points)
+
+    @staticmethod
+    def fade(i=(0.01, 1), o=(0.99, 1)):
+        points = [
+            (0, 0),
+            i,
+            o,
+            (1, 0)
+        ]
+        return Envelope(points)

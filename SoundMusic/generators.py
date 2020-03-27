@@ -68,15 +68,11 @@ class GhostsGenerator(IGenerator):
             time = lr.frames_to_time(onset, audio.rate)
             profile = fft_a[:,onset]
             phases = fft_ph[:,onset]
-            sort = np.argsort(profile)
-            s = sort.size - 1
-            sort = np.array(list(map(lambda x: s - x, sort)))
-            freqs = [fs[i] for i in range(len(sort)) \
-                if sort[i] < self.n_notes]
-            amps = [profile[i] for i in range(len(sort)) \
-                if sort[i] < self.n_notes]
-            phs = [phases[i] for i in range(len(sort)) \
-                if sort[i] < self.n_notes]
+            n = self.n_notes
+            sort = np.argsort(profile)[-(n+1):-1]
+            freqs = [fs[i] for i in sort]
+            amps = [profile[i] for i in sort]
+            phs = [phases[i] for i in sort]
             for f,a,ph in zip(freqs, amps, phs):
                 wave = wavef.WaveFunction.sine(f, a*self.amp, ph)
                 wave_s = wave.sample(0, self.dur, round(audio.rate * self.dur))
@@ -125,6 +121,9 @@ class Events(IGenerator):
             samples = audio.samples[o1:o2]
             t = lr.samples_to_time(o1, audio.rate) + random.uniform(-5, 5)
             t = max(0, t)
+            fade = wavef.Envelope.fade()
+            fade_s = fade.sample(0, 1, samples.size)
+            samples *= fade_s
             so = sounds.SoundObject(samples, audio.rate, t)
             if so.get_dur() > 0.2:
                 lso.append(so)
