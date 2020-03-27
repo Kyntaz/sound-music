@@ -7,7 +7,7 @@
     </head>
     <body>
         <div class="container text-center mt-5">
-            <h1>SoundMusic</h1>
+            <h1 class="display-3">SoundMusic</h1>
             <p><b>SoundMusic</b> is a creative system that generates music from audio files. <br>
                 SoundMusic is a working name, for the time being... <br>
                 This showcase is under construction.
@@ -16,7 +16,274 @@
         </div>
 
         <div class="container text-center border my-5 p-5">
+            <h3> The Other Sounds </h3>
+            <p class="lead"> 27/03/2020 </p>
+            <p class="text-justify">
+                When implementing the <a href="#ghosts">Ghosts Generator</a> into the system, at first, I made a mistake in the sorting of the frequencies, which resulted in taking the frequencies with least energy, instead of the ones with most energy. While this was clearly not the intended behaviour, it was still interesting and it got me thinking about the concept of complementary sounds – two sounds such that when we sum their corresponding amplitude matrices from the DFT, every entry in the resulting matrix would be maximized.
+            </p>
+            <p class="text-justify">
+                Thankfully, this means it is pretty easy to calculate the DFT of the complementary sound of a given sound – all you have to do is take a matrix where every value is the maximum amplitude value in <a href="https://librosa.github.io/librosa/generated/librosa.core.stft.html">the original DFT</a> and subtract the original amplitudes from that matrix. I also decided to invert all the values in the phase matrix, just for good measure. Furthermore, thankfully as well, once you have the DFT of a value, estimating the signal that originates that DFT is also <a href="https://librosa.github.io/librosa/generated/librosa.core.istft.html">somewhat trivial</a>. The results of this were… Underwhelming. Turns out most frequencies have really low values, so the complementary of nearly all sounds is going to be very rich in a lot of frequencies, and therefore be super noisy.
+            </p>
+
+            <div class="my-5 px-3">
+                <p>
+                    True Complement of Splashy Fishes <br>
+                    <small class="text-danger"> Attention: Super loud! </small>
+                </p>
+                <audio controls>
+                    <source src="music/the-other-sounds/noise-splash.mp3">
+                </audio>
+                <p>
+                    <a href="https://freesound.org/people/kylecutsfilms/sounds/443380/"> Original Audio </a>
+                </p>
+            </div>
+
+            <p class="text-justify">
+                But then it hit me! What I want is a sound with high energy in the frequencies where the original sound has low energy, low energy in the frequencies where the original sound has high energy, and zero energy in the frequencies where the original sound has zero or near zero frequencies. All I had to do to get that was create a binary mask from the entries in the original sound that are higher than a threshold and apply that mask to the resulting DFT. This threshold is calculated by multiplying the average value of amplitude in the original DFT by a constant. In the examples, the constant was 10 as it worked well for all of the dataset.
+            </p>
+
+            <div class="d-flex flex-wrap justify-content-around mb-5">
+                <div class="mt-5 px-3">
+                    <p>
+                        Masked Complement of Splashy Fishes <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/masked-splash.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/kylecutsfilms/sounds/443380/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Masked Complement of Ducks <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/masked-ducks.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/monotraum/sounds/254683/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Masked Complement of Chirpy Birds <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/masked-birds.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/hargissssound/sounds/345852/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Masked Complement of Swans <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/masked-swans.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/Santiboada/sounds/402682/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Masked Complement of the City <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/masked-city.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/habbis92/sounds/240233/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Masked Complement of Rain <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/masked-rain.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/TUNABIZZ/sounds/420979/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Masked Complement of Sports <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/masked-volleyball.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/Taira%20Komori/sounds/211713/"> Original Audio </a>
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-justify">
+                The examples bellow were generated by calculating the complement of the original audios, as described above, and then using the result as the input for a <a href="#ghosts1">Ghosts Generator with the same parameters as the first one described here</a>. I also extracted samples of 0.2 seconds or more from the input, by <a href="https://librosa.github.io/librosa/generated/librosa.onset.onset_detect.html">detecting onsets and backtracking them</a>, and shifted their position randomly by a maximum of 5 seconds to get some elements from the complement of the audio into the final result.
+            </p>
+
+            <div class="d-flex flex-wrap justify-content-around mb-5">
+                <div class="mt-5 px-3">
+                    <p>
+                        The Other Splashy Fishes <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/cool-splash.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/kylecutsfilms/sounds/443380/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        The Other Ducks <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/cool-ducks.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/monotraum/sounds/254683/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        The Other Chirpy Birds <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/cool-birds.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/hargissssound/sounds/345852/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        The Other Swans <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/cool-swans.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/Santiboada/sounds/402682/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        The Other City <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/cool-city.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/habbis92/sounds/240233/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        The Other Rain <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/cool-rain.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/TUNABIZZ/sounds/420979/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        The Other Sports <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/the-other-sounds/cool-volleyball.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/Taira%20Komori/sounds/211713/"> Original Audio </a>
+                    </p>
+                </div>
+            </div>
+
+            <p class="alert alert-warning text-justify">
+                <b> About the Clicking: </b> <br>
+                I forgot to apply an envelope to the samples in this batch of renders leading to some clicks when the samples begin and end.
+                I've fixed this, but haven't gotten around to doing a new batch of renders yet, as the process takes a while.
+                I'll take out this notice and replace the audios when I get around to it.
+            </p>
+        </div>
+
+        <div class="container text-center border my-5 p-5">
+            <h3 id="ghosts"> Ghosts </h3>
+            <p class="lead"> 26/03/2020 </p>
+            <p class="text-justify">
+                This point marks a shift in SoundMusic, as we change our attention from the traditional concept of notes to a more generic concept of sound.
+                Beggining here, the basic block of the SoundMusic output is not a note, characterized by a pitch and a duration, but a sound, stored internally as an array of samples representing a wave, the rate for those samples, and the point in time when that sound should be played in relation to the beggining of the piece.
+                As a first experiment with this revamped system, I decided to work with the simplest wave there is - the sine wave.
+            </p>
+            <p class="text-justify">
+                The examples bellow are all composed of a series of sine waves generated from a source audio file.
+                We start by applying a band-pass filter to the signal, to get rid of unwanted frequencies.
+                We then <a href="https://librosa.github.io/librosa/generated/librosa.core.stft.html">take the DFT</a> of the signal and split it into an amplitude and a phase matrix.
+                We normalize the amplitudes by dividing all the values in the matrix by the maximum amplitude.
+                We also <a href="https://librosa.github.io/librosa/generated/librosa.onset.onset_detect.html">detect the onsets in the signal</a>, selecting the frames in the DFT that correspond to the onsets.
+                For each of the frames we generate a sine wave of arbitrary length for each of the N frequencies with highest amplitude value and apply an ADSR envelope to the sine.
+                The generated sine waves have the normalized amplitude and phase calculated in the DFT.
+            </p>
+            <p id="ghosts1" class="text-justify">
+                In the examples bellow this process was repeated two times for the input signal, first with with the band pass from 100 Hz to 2000 Hz, an amplitude multiplier of 0.5, selecting the 3 highest frequencies and generating sine waves with 1 second of duration.
+                In the second, the band pass is from 20 Hz to 20 000 Hz, an amplitude multiplier of 0.7, selecting the highest frequency and generating sine waves of half a second of duration.
+            </p>
+
+            <div class="d-flex flex-wrap justify-content-around">
+                <div class="mt-5 px-3">
+                    <p> Bird Ghosts </p>
+                    <audio controls>
+                        <source src="music/ghosts/birds.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/hargissssound/sounds/345852/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p> Fish Ghosts </p>
+                    <audio controls>
+                        <source src="music/ghosts/splash.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/kylecutsfilms/sounds/443380/"> Original Audio </a>
+                    </p>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p> Sports Ghosts </p>
+                    <audio controls>
+                        <source src="music/ghosts/volleyball.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://freesound.org/people/Taira%20Komori/sounds/211713/"> Original Audio </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-center border my-5 p-5">
             <h3> Rendering MIDIs </h3>
+            <p class="lead"> 12/03/2020 </p>
             <p class="text-justify">
                 The following examples were generated by a precursor to our system.
                 It takes as inputs an audio file and a midi and renders the midi with sounds extracted from the audio.
@@ -27,48 +294,50 @@
                 However, the generated sounds have interesting textural properties.
             </p>
 
-            <div class="mt-5">
-                <p> The Mii Channel Music by Sampled Swans </p>
-                <audio controls>
-                    <source src="music/mii-swans.mp3">
-                </audio>
-                <p>
-                    <a href="https://www.youtube.com/watch?v=E9s1ltPGQOo&t=8s"> Original Music </a><br>
-                    <a href="https://freesound.org/people/Santiboada/sounds/402682/"> Original Audio </a>
-                </p>
-            </div>
+            <div class="d-flex flex-wrap justify-content-around">
+                <div class="mt-5 px-5">
+                    <p> The Mii Channel Music by Sampled Swans </p>
+                    <audio controls>
+                        <source src="music/rendering-midis/mii-swans.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://www.youtube.com/watch?v=E9s1ltPGQOo&t=8s"> Original Music </a><br>
+                        <a href="https://freesound.org/people/Santiboada/sounds/402682/"> Original Audio </a>
+                    </p>
+                </div>
 
-            <div class="mt-5">
-                <p> Fauré's Pavane by Sampled Swans </p>
-                <audio controls>
-                    <source src="music/pavane-swans.mp3">
-                </audio>
-                <p>
-                    <a href="https://www.youtube.com/watch?v=mpgyTl8yqbw"> Original Music </a><br>
-                    <a href="https://freesound.org/people/Santiboada/sounds/402682/"> Original Audio </a>
-                </p>
-            </div>
+                <div class="mt-5 px-5">
+                    <p> Fauré's Pavane by Sampled Swans </p>
+                    <audio controls>
+                        <source src="music/rendering-midis/pavane-swans.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://www.youtube.com/watch?v=mpgyTl8yqbw"> Original Music </a><br>
+                        <a href="https://freesound.org/people/Santiboada/sounds/402682/"> Original Audio </a>
+                    </p>
+                </div>
 
-            <div class="mt-5">
-                <p> The Mii Channel Music by Granulated Birds </p>
-                <audio controls>
-                    <source src="music/mii-granular-birds.mp3">
-                </audio>
-                <p>
-                    <a href="https://www.youtube.com/watch?v=E9s1ltPGQOo&t=8s"> Original Music </a><br>
-                    <a href="https://freesound.org/people/hargissssound/sounds/345852/"> Original Audio </a>
-                </p>
-            </div>
+                <div class="mt-5 px-5">
+                    <p> The Mii Channel Music by Granulated Birds </p>
+                    <audio controls>
+                        <source src="music/rendering-midis/mii-granular-birds.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://www.youtube.com/watch?v=E9s1ltPGQOo&t=8s"> Original Music </a><br>
+                        <a href="https://freesound.org/people/hargissssound/sounds/345852/"> Original Audio </a>
+                    </p>
+                </div>
 
-            <div class="mt-5">
-                <p> Fauré's Pavane by Granulated Water </p>
-                <audio controls>
-                    <source src="music/pavane-granular-water.mp3">
-                </audio>
-                <p>
-                    <a href="https://www.youtube.com/watch?v=mpgyTl8yqbw"> Original Music </a><br>
-                    <a href="https://freesound.org/people/kylecutsfilms/sounds/443380/"> Original Audio </a>
-                </p>
+                <div class="mt-5 px-5">
+                    <p> Fauré's Pavane by Granulated Water </p>
+                    <audio controls>
+                        <source src="music/rendering-midis/pavane-granular-water.mp3">
+                    </audio>
+                    <p>
+                        <a href="https://www.youtube.com/watch?v=mpgyTl8yqbw"> Original Music </a><br>
+                        <a href="https://freesound.org/people/kylecutsfilms/sounds/443380/"> Original Audio </a>
+                    </p>
+                </div>
             </div>
         </div>
 
