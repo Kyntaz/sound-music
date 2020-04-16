@@ -139,6 +139,18 @@ def list_preprocessors():
     pres = preprocessors.get_preprocessors()
     print(", ".join(pres.keys()))
 
+def process_all(name):
+    data = audio.get_dataset()
+    for key in data.keys():
+        print(f"Processing {key}")
+        try:
+            load_audio(key)
+            command_pure()
+            save(f"{name}_{key}")
+            print("Success!")
+        except:
+            print("Failed...")
+
 # =====
 
 # Mapping all commands to their name:
@@ -163,4 +175,5 @@ _all_commands = {
     "pre": add_preprocessor,
     "tpre": test_preprocess,
     "lpre": list_preprocessors,
+    "pureall": process_all,
 }

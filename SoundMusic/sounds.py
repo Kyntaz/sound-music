@@ -2,6 +2,7 @@
 import numpy as np
 import audio
 import math as mt
+import time
 
 class SoundObject:
     def __init__(self, samples, rate, t):
@@ -27,6 +28,6 @@ def render(sound_objects, rate):
         s = mt.floor(sound.t * rate)
         e = s + sound.samples.size
         canvas[s:e] += sound.samples
-    
+        
     return audio.Audio(canvas, rate)
     
