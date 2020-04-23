@@ -1,6 +1,5 @@
 # Utilities to process audio in the agents.
 import math
-import numpy as np
 
 # Detecting time-signatures
 def get_time_signature(recurrence_matrix, candidates):
@@ -38,11 +37,3 @@ def get_time_signature(recurrence_matrix, candidates):
             (bar_len * len(full_sets) + len(partials[0]) * len(partials))
         sms += [sm]
     return sms
-
-def fade(f, l):
-    f = int(f)
-    return np.concatenate([
-        np.linspace(0, 1, f),
-        np.ones(l - 2 * f),
-        np.linspace(1, 0, f)
-    ])
