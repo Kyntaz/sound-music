@@ -9,7 +9,13 @@ class IManipulator:
     def get_random(self):
         raise NotImplementedError
 
+    def tweak(self, power):
+        raise NotImplementedError
+
 class ISimpleManipulator(IManipulator):
 
     def get_random(self):
         return self
+
+    def tweak(self, power):
+        pass

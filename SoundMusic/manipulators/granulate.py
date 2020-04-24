@@ -4,12 +4,17 @@ from SoundMusic.manipulators.base import ISimpleManipulator
 from SoundMusic.sound import SoundObject
 import copy
 import random
+import time
 
 class GranularShuffle(ISimpleManipulator):
 
     def __init__(self):
         self.density = 100
         self.seed = 202016041830
+
+    def tweak(self, power):
+        self.density += np.clip(random.uniform(-1,1) * 950 * power, 50, 1000)
+        self.seed = time.time()
 
     def do(self, sounds):
         sounds = copy.deepcopy(sounds)
@@ -25,7 +30,9 @@ class GranularShuffle(ISimpleManipulator):
                 fade = sm.processing.fade(0.1 * gran.size, gran.size)
                 grans.append(gran*fade)
             random.shuffle(grans)
-            if len(grans) <= 0: continue
+            if len(grans) <= 0:
+                lso.append(so)
+                continue
             samples = np.concatenate(grans)
             nso = SoundObject(samples, so.rate, so.t)
             lso.append(nso)
@@ -35,6 +42,10 @@ class GranularReverse(ISimpleManipulator):
 
     def __init__(self):
         self.density = 100
+
+    def tweak(self, power):
+        self.density += np.clip(random.uniform(-1,1) * 950 * power, 50, 1000)
+        self.seed = time.time()
 
     def do(self, sounds):
         sounds = copy.deepcopy(sounds)
@@ -49,7 +60,9 @@ class GranularReverse(ISimpleManipulator):
                 fade = sm.processing.fade(0.1 * gran.size, gran.size)
                 grans.append(gran*fade)
             grans.reverse()
-            if len(grans) <= 0: continue
+            if len(grans) <= 0:
+                lso.append(so)
+                continue
             samples = np.concatenate(grans)
             nso = SoundObject(samples, so.rate, so.t)
             lso.append(nso)
@@ -60,12 +73,19 @@ class Granulate(ISimpleManipulator):
     def __init__(self):
         self.density = 10
 
+    def tweak(self, power):
+        self.density += np.clip(random.uniform(-1,1) * 150 * power, 50, 200)
+        self.seed = time.time()
+
     def do(self, sounds):
         sounds = copy.deepcopy(sounds)
         lso = []
         shift = 0
         for so in sounds:
             n_grans = np.round(self.density * so.duration())
+            if n_grans < 1:
+                lso.append(so)
+                continue
             splits = np.linspace(0, so.samples.size, int(n_grans))
             splits = np.floor(splits)
             for s1, s2 in zip(splits, splits[1:]):

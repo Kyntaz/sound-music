@@ -1,8 +1,9 @@
 import SoundMusic as sm
 from SoundMusic.manipulators.base import IManipulator
 import random
+import numpy as np
 
-class ChainManipulator(IManipulator):
+class Chain(IManipulator):
 
     def __init__(self, manipulators):
         self.manipulators = manipulators
@@ -15,7 +16,10 @@ class ChainManipulator(IManipulator):
     def get_random(self):
         return random.choice(self.manipulators).get_random()
 
-class StackManipulator(IManipulator):
+    def tweak(self, power):
+        for m in self.manipulators: m.tweak(power)
+
+class Stack(IManipulator):
 
     def __init__(self, manipulators):
         self.manipulators = manipulators
@@ -29,7 +33,38 @@ class StackManipulator(IManipulator):
     def get_random(self):
         return random.choice(self.manipulators).get_random()
 
+    def tweak(self, power):
+        for m in self.manipulators: m.tweak(power)
+
+class Progression(IManipulator):
+
+    def __init__(self, manipulators):
+        self.manipulators = manipulators
+
+    def do(self, sounds):
+        if len(sounds) < len(self.manipulators):
+            out = []
+            for manip in self.manipulators:
+                out += manip.do(sounds)
+            return out
+        sounds = sorted(sounds, key=lambda so: so.t)
+        parts = np.array_split(sounds, len(self.manipulators))
+        out = []
+        for part, manip in zip(parts, self.manipulators):
+            if part.size == 0:
+                print("Warning: Progression fail.")
+                continue
+            out += manip.do(part.tolist())
+        return out
+
+    def get_random(self):
+        return random.choice(self.manipulators).get_random()
+
+    def tweak(self, power):
+        for m in self.manipulators: m.tweak(power)
+
 as_list = [
-    ChainManipulator,
-    StackManipulator
+    Chain,
+    Stack,
+    Progression
 ]

@@ -20,4 +20,3 @@ def get():
     return list(_dataset.keys())
 
 init_dataset()
-print(len(_dataset))

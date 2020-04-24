@@ -9,7 +9,11 @@ def make_random_manip(sManips, cManips, complexity):
     for _ in range(complexity):
         manip2 = (random.choice(sManips))()
         connector = random.choice(cManips)
-        manip = connector([manip, manip2])
+        manip = connector(random.choice((
+            [manip, manip2],
+            [manip2, manip]
+        )))
+    manip.tweak(1.0)
     return manip
 
 def batch_experiment(n_sources, n_trials, complexity, s_manips, c_manips, name):
@@ -30,6 +34,9 @@ def batch_experiment(n_sources, n_trials, complexity, s_manips, c_manips, name):
                 res = sm.render.render_audio(res, fade=3, pretty=True)
                 print("Writing result.")
                 res.write(f"output/{name}_{source_id}_t{i}.wav")
+            except KeyboardInterrupt:
+                print("Batch job interrupted by user.")
+                return
             except:
                 tb.print_exc()
                 print("Failed...")

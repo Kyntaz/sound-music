@@ -3,6 +3,7 @@ from SoundMusic.manipulators.base import ISimpleManipulator
 import librosa as lr
 import numpy as np
 from pysndfx import AudioEffectsChain as Fx
+import random
 
 class Ghosts(ISimpleManipulator):
     
@@ -10,6 +11,11 @@ class Ghosts(ISimpleManipulator):
         self.amp = 0.5
         self.n_notes = 3
         self.dur = 1
+
+    def tweak(self, power):
+        self.amp += np.clip(random.uniform(-1, 1) * power, 0, 1)
+        self.n_notes += round(np.clip(random.uniform(-1, 1) * 9 * power, 1, 10))
+        self.dur += np.clip(random.uniform(-1, 1) * 10 * power, 0.1, 10)
 
     def do(self, sounds):
         sound = sm.render.render_audio(sounds)
@@ -27,7 +33,7 @@ class Ghosts(ISimpleManipulator):
             time = lr.frames_to_time(onset, sound.rate)
             profile = fft_a[:,onset]
             phases = fft_ph[:,onset]
-            n = self.n_notes
+            n = int(self.n_notes)
             sort = np.argsort(profile)[-n:]
             freqs = [fs[i] for i in sort]
             amps = [profile[i] for i in sort]
@@ -36,7 +42,7 @@ class Ghosts(ISimpleManipulator):
                 wave = a * np.sin(np.linspace(
                     ph * f * 2 * np.pi,
                     (ph + self.dur) * f * 2 * np.pi,
-                    self.dur * sound.rate))
+                    int(self.dur * sound.rate)))
                 fade = sm.processing.fade(sound.rate * self.dur * 0.1, wave.size)
                 so = sm.sound.SoundObject(wave*fade, sound.rate, time)
                 lso.append(so)
