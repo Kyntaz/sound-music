@@ -139,3 +139,13 @@ run.bat
 
 # Instruments
 soundfonts/
+
+#node
+node_modules/
+
+#temporary files
+temp.*
+temp/
+
+#old files
+old/
