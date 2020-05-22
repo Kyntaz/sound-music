@@ -6,6 +6,7 @@ import tkinter as tk
 import tkinter.filedialog
 import traceback as tb
 import time
+import numpy as np
 
 @eel.expose
 def manipulators():
@@ -72,3 +73,41 @@ def getFile():
     f = tk.filedialog.askopenfilename(parent=root)
     root.destroy()
     return f
+
+# Interactive Evolutionary Algorithm
+
+ievolve_obj = None
+
+@eel.expose
+def ievolve_start(source_path, rep_cycle, complexity, init_n, mutation_factor, elitism):
+    global ievolve_obj
+    try:
+        source = sm.sound.SoundObject.load(source_path)
+        ievolve_obj = sm.ievolution.UiEvolution(source, rep_cycle, complexity,
+            init_n, mutation_factor, elitism, eel.root_path)
+        return ievolve_obj.start()
+    except:
+        tb.print_exc()
+        return ("", "")
+
+@eel.expose
+def ievolve_step(w):
+    global ievolve_obj
+    while True:
+        try:
+            out = ievolve_obj.step(w)
+            print(f"Population: {len(ievolve_obj.population)}")
+            print(f"Competing: {ievolve_obj.competing}")
+            print(f"Max Value: {max([m[1] for m in ievolve_obj.population])}")
+            print(f"Mean Value: {np.mean([m[1] for m in ievolve_obj.population])}")
+            print(f"Reproduction Cycle: {ievolve_obj.reproduction_timer}")
+            return out
+        except:
+            tb.print_exc()
+            #return ievolve_obj.files
+
+@eel.expose
+def ievolve_best():
+    global ievolve_obj
+    return ievolve_obj.render_best()
+

@@ -5,7 +5,7 @@ import random
 
 class IManipulator:
 
-    def do(self, sounds: List[sm.sound.SoundObject]) -> List[sm.sound.SoundObject]:
+    def do(self, sounds: sm.sound.SoundObject) -> sm.sound.SoundObject:
         raise NotImplementedError
 
     def get_random(self):

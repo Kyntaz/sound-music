@@ -1,6 +1,6 @@
 import SoundMusic as sm
 import numpy as np
-from SoundMusic.manipulators.base import ISimpleManipulator
+from SoundMusic.manipulators.base import ISimpleManipulator, tweak_function
 from SoundMusic.sound import SoundObject
 import copy
 import random
@@ -45,7 +45,6 @@ class GranularReverse(ISimpleManipulator):
 
     def tweak(self, power):
         self.density += np.clip(random.uniform(-1,1) * 950 * power, 50, 1000)
-        self.seed = time.time()
 
     def do(self, sounds):
         sounds = copy.deepcopy(sounds)
@@ -68,16 +67,21 @@ class GranularReverse(ISimpleManipulator):
             lso.append(nso)
         return lso
 
-class Granulate(ISimpleManipulator):
+class ScatterGrains(ISimpleManipulator):
 
     def __init__(self):
+        self.seed = 187
         self.density = 10
+        self.scatter = 1
+
 
     def tweak(self, power):
         self.density += np.clip(random.uniform(-1,1) * 150 * power, 50, 200)
+        self.scatter += tweak_function(0.01, 10.0, power)
         self.seed = time.time()
 
     def do(self, sounds):
+        random.seed(self.seed)
         sounds = copy.deepcopy(sounds)
         lso = []
         shift = 0
@@ -86,13 +90,19 @@ class Granulate(ISimpleManipulator):
             if n_grans < 1:
                 lso.append(so)
                 continue
+            grans = []
             splits = np.linspace(0, so.samples.size, int(n_grans))
             splits = np.floor(splits)
             for s1, s2 in zip(splits, splits[1:]):
                 gran = so.samples[int(s1):int(s2)]
                 fade = sm.processing.fade(0.1 * gran.size, gran.size)
                 gran *= fade
-                nso = SoundObject(gran, so.rate, so.t + shift)
-                lso.append(nso)
+                t = shift + random.uniform(-self.scatter, self.scatter)
+                t = max(t, 0.0)
+                nso = SoundObject(gran, so.rate, t)
+                grans.append(nso)
                 shift += nso.duration()
+            nso = sm.render.render_audio(grans)
+            nso.t = so.t
+            lso.append(nso)
         return lso

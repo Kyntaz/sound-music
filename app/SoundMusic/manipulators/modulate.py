@@ -10,15 +10,23 @@ import random
 def _sine(t, f, a, ph):
     return math.sin(t * 2 * math.pi * f + ph) * a
 
+def _square(t, f, a, ph):
+    return np.sign(math.sin(t * 2 * math.pi * f + ph)) * a
+
 _vsine = np.vectorize(_sine)
+_vsquare = np.vectorize(_square)
 
 class Modulate(ISimpleManipulator):
 
     def __init__(self):
         self.window = 500
+        self.shape = 0
+
+        self.shapes = [_vsine, _vsquare]
 
     def tweak(self, power):
         self.window += int(round(np.clip(random.uniform(-1,1) * 20000 * power, 1, 20000)))
+        self.shape = random.choice([0, 1])
 
     def do(self, sounds):
         lso = []
@@ -30,9 +38,9 @@ class Modulate(ISimpleManipulator):
             times_f = lr.time_to_frames(times, so.rate)
             pitch_track = [pitch_track[t] for t in times_f if 0 <= t < len(pitch_track)]
             mag_track = [mag_track[t] for t in times_f if 0 <= t < len(mag_track)]
-            pitch_track = sp.signal.convolve(pitch_track, np.ones(self.window) / self.window, mode='same')
-            pitch_track = sp.signal.convolve(pitch_track, np.ones(self.window) / self.window, mode='same')
-            wave = _vsine(times, pitch_track, mag_track, 0)
+            #pitch_track = sp.signal.convolve(pitch_track, np.ones(self.window) / self.window, mode='same')
+            #pitch_track = sp.signal.convolve(pitch_track, np.ones(self.window) / self.window, mode='same')
+            wave = self.shapes[self.shape](times, pitch_track, mag_track, 0)
             nso = SoundObject(wave, so.rate, so.t)
             lso.append(nso)
         return lso
@@ -42,18 +50,23 @@ class WaveMod(ISimpleManipulator):
     def __init__(self):
         self.window = 500
         self.base = 440
+        self.shape = 0
+
+        self.shapes = [_vsine, _vsquare]
 
     def tweak(self, power):
         self.window += int(round(np.clip(random.uniform(-1,1) * 20000 * power, 1, 20000)))
+        self.shape = random.choice([0, 1])
         
     def do(self, sounds):
         lso = []
         for so in sounds:
-            contour = sp.signal.convolve(so.samples, np.ones(self.window) / self.window, mode='same')
+            #contour = sp.signal.convolve(so.samples, np.ones(self.window) / self.window, mode='same')
+            contour = so.samples
             contour_p = np.clip(contour + self.base, 1, None)
             contour_a = np.abs(contour)
             times = np.linspace(so.t, so.end(), so.samples.size)
-            wave = _vsine(times, contour_p, contour_a, 0)
+            wave = self.shapes[self.shape](times, contour_p, contour_a, 0)
             nso = SoundObject(wave, so.rate, so.t)
             lso.append(nso)
         return lso

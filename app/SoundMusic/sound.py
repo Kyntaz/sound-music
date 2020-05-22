@@ -25,3 +25,6 @@ class SoundObject:
 
     def end(self):
         return self.t + self.duration()
+
+def load(path):
+    return SoundObject.load(path)

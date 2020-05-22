@@ -4,8 +4,9 @@ from typing import List
 import numpy as np
 import math
 from pysndfx import AudioEffectsChain as Fx
+import librosa as lr
 
-def render_audio(sounds: List[SoundObject], rate: int=-1, fade: float=0, pretty: bool=False):
+def render_audio(sounds: List[SoundObject], rate: int=-1, fade: float=0, pretty: bool=False, trim: bool=True):
     sounds = list(filter(lambda so: isinstance(so.samples, np.ndarray) \
         and so.samples.size > 0, sounds))
     if len(sounds) <= 0:
@@ -18,6 +19,8 @@ def render_audio(sounds: List[SoundObject], rate: int=-1, fade: float=0, pretty:
         st = math.floor(so.t * rate)
         et = st + so.samples.size
         canvas[st:et] += so.samples
+    if trim:
+        canvas, _ = lr.effects.trim(canvas)
     if pretty:
         canvas /= np.max(canvas)
         canvas = (

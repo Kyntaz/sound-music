@@ -10,6 +10,7 @@ class Chain(IManipulator):
 
     def do(self, sounds):
         for manip in self.manipulators:
+            print(f"Doing {type(manip).__name__}")
             sounds = manip.do(sounds)
         return sounds
 
@@ -27,6 +28,7 @@ class Stack(IManipulator):
     def do(self, sounds):
         out = []
         for manip in self.manipulators:
+            print(f"Doing {type(manip).__name__}")
             out += manip.do(sounds)
         return out
 
@@ -45,6 +47,7 @@ class Progression(IManipulator):
         if len(sounds) < len(self.manipulators):
             out = []
             for manip in self.manipulators:
+                print(f"Doing {type(manip).__name__}")
                 out += manip.do(sounds)
             return out
         sounds = sorted(sounds, key=lambda so: so.t)
@@ -54,6 +57,7 @@ class Progression(IManipulator):
             if part.size == 0:
                 print("Warning: Progression fail.")
                 continue
+            print(f"Doing {type(manip).__name__}")
             out += manip.do(part.tolist())
         return out
 

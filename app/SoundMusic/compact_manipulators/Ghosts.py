@@ -1,5 +1,5 @@
 import SoundMusic as sm
-from SoundMusic.manipulators.base import ISimpleManipulator
+from SoundMusic.compact_manipulators.base import ISimpleManipulator
 import librosa as lr
 import numpy as np
 from pysndfx import AudioEffectsChain as Fx
@@ -15,11 +15,9 @@ class Ghosts(ISimpleManipulator):
     def tweak(self, power):
         self.amp += np.clip(random.uniform(-1, 1) * power, 0, 1)
         self.n_notes += round(np.clip(random.uniform(-1, 1) * 9 * power, 1, 10))
-        self.dur += np.clip(random.uniform(-1, 1) * 10 * power, 0.1, 10)
+        self.dur += np.clip(random.uniform(-1, 1) * 3 * power, 0.1, 3)
 
-    def do(self, sounds):
-        if (len(sounds) == 0): return sounds
-        sound = sm.render.render_audio(sounds)
+    def do(self, sound):
         lso = []
         fft = lr.stft(sound.samples)
         fft_a = np.abs(fft)
@@ -47,7 +45,7 @@ class Ghosts(ISimpleManipulator):
                 fade = sm.processing.fade(sound.rate * self.dur * 0.1, wave.size)
                 so = sm.sound.SoundObject(wave*fade, sound.rate, time)
                 lso.append(so)
-        return lso
+        return sm.render.render_audio(lso)
 
 class SquareGhosts(ISimpleManipulator):
     
@@ -60,11 +58,9 @@ class SquareGhosts(ISimpleManipulator):
     def tweak(self, power):
         self.amp += np.clip(random.uniform(-1, 1) * power, 0, 1)
         self.n_notes += round(np.clip(random.uniform(-1, 1) * 9 * power, 1, 10))
-        self.dur += np.clip(random.uniform(-1, 1) * 10 * power, 0.1, 10)
+        self.dur += np.clip(random.uniform(-1, 1) * 3 * power, 0.1, 3)
 
-    def do(self, sounds):
-        if (len(sounds) == 0): return sounds
-        sound = sm.render.render_audio(sounds)
+    def do(self, sound):
         lso = []
         fft = lr.stft(sound.samples)
         fft_a = np.abs(fft)
@@ -93,4 +89,4 @@ class SquareGhosts(ISimpleManipulator):
                 fade = sm.processing.fade(sound.rate * self.dur * 0.1, wave.size)
                 so = sm.sound.SoundObject(wave*fade, sound.rate, time)
                 lso.append(so)
-        return lso
+        return sm.render.render_audio(lso)

@@ -1,6 +1,6 @@
 import SoundMusic as sm
 from SoundMusic.sound import SoundObject
-from SoundMusic.manipulators.base import ISimpleManipulator
+from SoundMusic.manipulators.base import ISimpleManipulator, tweak_function
 import copy
 import random
 from pysndfx import AudioEffectsChain as Fx
@@ -173,4 +173,24 @@ class Amplify(ISimpleManipulator):
         sounds = copy.deepcopy(sounds)
         for so in sounds:
             so.samples *= self.amp
+        return sounds
+
+class TimeMagnet(ISimpleManipulator):
+
+    def __init__(self):
+        self.time = 2.0 / 3.0
+        self.strength = 1.0
+        self.radius = 10.0
+
+    def tweak(self, power):
+        self.time += tweak_function(0.0, 1.0, power)
+        self.strength += tweak_function(-1.0, 1.0, power)
+        self.radius += tweak_function(1.0, 120.0, power)
+
+    def do(self, sounds):
+        sounds = copy.deepcopy(sounds)
+        real_time = max([s.end() for s in sounds]) * self.time
+        for sound in sounds:
+            if abs(sound.t - real_time) < self.radius:
+                sound.t += (real_time - sound.t) * self.strength
         return sounds

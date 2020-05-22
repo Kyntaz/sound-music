@@ -1,14 +1,15 @@
 import SoundMusic.manipulators.compound
-from SoundMusic.manipulators.Ghosts import Ghosts
-from SoundMusic.manipulators.short import Identity, Flatten, RandomFilter, LengthFilter, BandPass, Reverse, PitchShift, PositionShift, Speed, Echo
+from SoundMusic.manipulators.Ghosts import Ghosts, SquareGhosts
+from SoundMusic.manipulators.short import Identity, Flatten, RandomFilter, LengthFilter, BandPass, Reverse, PitchShift, PositionShift, Speed, Echo, TimeMagnet
 from SoundMusic.manipulators.split import BeatSplit, OnsetSplit
 from SoundMusic.manipulators.Complement import Complement
-from SoundMusic.manipulators.granulate import GranularShuffle, GranularReverse, Granulate
+from SoundMusic.manipulators.granulate import GranularShuffle, GranularReverse, ScatterGrains
 from SoundMusic.manipulators.modulate import Modulate, WaveMod
 
 as_list = [
-    Ghosts,
     #Identity,
+    Ghosts,
+    SquareGhosts,
     Flatten,
     RandomFilter,
     LengthFilter,
@@ -23,7 +24,8 @@ as_list = [
     Complement,
     GranularShuffle,
     GranularReverse,
-    Granulate,
+    ScatterGrains,
     Modulate,
-    WaveMod
+    WaveMod,
+    TimeMagnet
 ]

@@ -17,6 +17,7 @@ class ModeSelector extends React.Component {
         const modes = {
             "Random Manipulation": <RandomManipulator />,
             "Custom Manipulation": <CustomManipulator />,
+            "Interactive Evolution": <UiEvolutionary />,
             "Help": <Help />
         };
 
