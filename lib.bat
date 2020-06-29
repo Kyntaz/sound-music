@@ -1,4 +1,4 @@
 @echo off
 CALL conda.bat activate ./venv
-cd app
+cd src
 python -i -c "import SoundMusic as sm"

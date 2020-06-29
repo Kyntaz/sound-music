@@ -4,6 +4,7 @@
         <title> SoundMusic</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="styles.css">
+        <script src="https://kit.fontawesome.com/d38039eaf4.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div class="container text-center mt-5">
@@ -16,35 +17,763 @@
         </div>
 
         <div class="container text-center border my-5 p-5">
+            <h3> SoundMusic </h3>
+            <p class="lead"> 28/06/2020 </p>
+            <p class="text-justify">
+                Over the past few months we've put together a lot of the previously explored concepts and some new ones into a system capable of generating novel electroacoustic music (or at least sound art) from previously recorded audios.
+                The system we have right now is versatile and was designed with human-machine collaboration in mind, allowing the human to intervene in many of the phases of the creation process or even taking over at some points.
+                SoundMusic splits the creative process into 5 distinct phases, each with a tangible result that can be used on its own or incorporated into the final output of the system.
+            </p>
+
+            <h5 class="text-justify mt-5"> Phase 1: Extraction </h5>
+            <p class="text-justify">
+                The first phase of the process involves extracting salient sounds from the  source audio.
+                This is done by programaticaly tweaking the parameters of a silence detectio algorithm in order to maximize the number of non-silent sections detected within a certain duration interval.
+                Bellow are some examples of the kind of sounds that are extracted.
+            </p>
+
+            <div class="d-inline-flex flex-wrap justify-content-around mt-5 pb-5 border" style="width: fit-content;">
+                <div class="mt-5 px-3">
+                    <p>
+                        Splash <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/splash.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <br><div class="border-left d-inline-block" style="height: 100px; width: 0px;"></div>
+
+            <div class="d-flex flex-wrap justify-content-around pb-5 border">
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 1 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/splash1.mp3">
+                    </audio>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 2 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/splash2.mp3">
+                    </audio>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 3 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/splash3.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around mt-5 pb-5 border" style="width: fit-content;">
+                <div class="mt-5 px-3">
+                    <p>
+                        Birds <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/birds.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <br><div class="border-left d-inline-block" style="height: 100px; width: 0px;"></div>
+
+            <div class="d-flex flex-wrap justify-content-around pb-5 border">
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 1 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/birds1.mp3">
+                    </audio>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 2 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/birds2.mp3">
+                    </audio>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 3 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/birds3.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around mt-5 pb-5 border" style="width: fit-content;">
+                <div class="mt-5 px-3">
+                    <p>
+                        Swans <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/swans.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <br><div class="border-left d-inline-block" style="height: 100px; width: 0px;"></div>
+
+            <div class="d-flex flex-wrap justify-content-around pb-5 border">
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 1 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/swans1.mp3">
+                    </audio>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 2 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/swans2.mp3">
+                    </audio>
+                </div>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Fragment 3 <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/extraction/swans3.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <h5 class="text-justify mt-5"> Phase 2: Synthesis </h5>
+            <p class="text-justify">
+                The purpose of the synthesis phase is to create novel sounds to be used in the final piece, creating some detatchment from the source audio.
+                The phase uses a parametrized synth that is capable of generating a sound from a source audio through the combination of multiple synthesis techniques.
+                This synth is composed of many sub-synths, each dedicated to a different kind of synthesis.
+                This design makes it easy to introduce new sub-synths to the complex synth, leading to the creation of different sounds.
+                The following synthesis techniques have been implemented:
+            </p>
+
+            <p class="lead text-justify"> Additive Synthesis </p>
+            <p class="text-justify">
+                Additive synthesis is a technique that generates new sounds by adding together many waves, tipicaly sine waves, to recreate the sound of an instrument.
+                In our system however, we open the possibility of combining other waves that aren't sine waves. The amplitude, frequency and phase of the waves that are combined are controlled by the input sound.
+                In particular, the <em>N</em> bins with highest average amplitude over time are considered.
+                This synth has the following parameters:
+            </p>
+
+            <ul class="text-justify">
+                <li> Wave Shape: [sine, square, triangle, sawtooth]</li>
+                <li> Number of Waves: [1, 25]</li>
+            </ul>
+
+            <p class="lead text-justify"> FM Synthesis </p>
+            <p class="text-justify">
+                Frequency Modulation synthesis is a technique for generating sounds by modulating the frequency of a wave with another wave.
+                In our specific case, a regular wave's frequecy is modulated by the values resulting from running a pitch tracking algorithm on the original sound.
+                We also modulate the amplitude of the wave with the amplitude of the original wave.
+                This synth has the following parameters:
+            </p>
+
+            <ul class="text-justify">
+                <li> Wave Shape: [sine, square, triangle, sawtooth]</li>
+                <li> Wave Phase (rad): [0.0, 2&pi;]</li>
+            </ul>
+
+            <p class="lead text-justify"> PM Synthesis </p>
+            <p class="text-justify">
+                Phase Modulation synthesis is similar to the previously described Frequency Modulation synthesis and achieves similar results.
+                The main difference is that instead of modulating the frequecy of a wave, we modulate its phase.
+                The reason why we separate the two is because of the way our implementations interact with the source sound.
+                In this case, we use a regular wave to modulate the phase of the playback of the source wave, leading to very different results from the previous technique.
+                This synth has the following parameters:
+            </p>
+
+            <ul class="text-justify">
+                <li> Wave Shape: [sine, square, triangle, sawtooth]</li>
+                <li> Wave Frequency (Hz): [0.1, 100.0]</li>
+                <li> Wave Amplitude (samples): [0.1, 50.0]</li>
+                <li> Wave Phase (rad): [0.0, 2&pi;]</li>
+            </ul>
+
+            <p class="lead text-justify"> Granular Synthesis </p>
+            <p class="text-justify">
+                Granular synthesis is a technique for creating new sounds from a source sound by making manipulations on a very small temporal scale.
+                Our specific implementation works by coppying small segments from the source audio into random locations of the target audio to create a new texture from the source audio.
+                The following parameters control this synth:
+            </p>
+
+            <ul class="text-justify">
+                <li> Source Grain Density (s<sup>-1</sup>): [10.0, 500.0] </li>
+                <li> Source Grain Density Variance: [5.0, 100.0] </li>
+                <li> Target Grain Density (s<sup>-1</sup>): [10.0, 500.0] </li>
+                <li> Target Density Variance: [5.0, 100.0] </li>
+            </ul>
+
+            <p class="lead text-justify"> Spectral Granular Synthesis </p>
+            <p class="text-justify">
+                This technique is similar to the previously described technique, with the difference that instead of working with parts of the source sound wave, it works on the spectral representations of the source and target.
+                This means that the grains can be shifted not only in the time domain, but also in the frequency domain.
+                This can also create interesting features from the source audio.
+                The following parameters control this synth:
+            </p>
+
+            <ul class="text-justify">
+                <li> Source Grain Density (s<sup>-1</sup>): [10.0, 500.0] </li>
+                <li> Source Grain Density Variance: [5.0, 100.0] </li>
+                <li> Target Grain Density (s<sup>-1</sup>): [10.0, 500.0] </li>
+                <li> Target Density Variance: [5.0, 100.0] </li>
+                <li> Grain Frequency Width (ratio): [0.01, 1.0]</li>
+                <li> Grain Frequency Width Variance: [0.0, 0.3]</li>
+            </ul>
+
+            <p class="lead text-justify"> Combined Synthesis </p>
+            <p class="text-justify">
+                All of the above techniques are combined into a single synth that contains an instance of each of the previous synths.
+                This synth inherites all of the parameters of the previous synths, and also enough parameters to generate a wave that modulates the amplitude of the output of each of the sub-synths.
+                For each of the previously described synths, this synth also has the following parameters:
+            </p>
+
+            <ul class="text-justify">
+                <li> Base Amplitude: [-1.0, 1.0] </li>
+                <li> Modulator Shape: [sine, square, triangle, sawtooth] </li>
+                <li> Modulator Amplitude: [0.0, 1.0] </li>
+                <li> Modulator Frequency (Hz): [0.0, 10.0]</li>
+                <li> Modulator Phase (rad): [0.0, 2&pi;] </li>
+            </ul>
+
+            <p class="text-justify">
+                The final synth's parameters can either be completely random, or generated through a Genetic Algorithm.
+                The Genetic Algorithm considers as the genotype for each individual synth the list of parameters that controls it, and as the fenotype an example of sound produced by the synth.
+                Since each synth can generate a different sound for each source audio, we evaluate <em>n</em> examples selected randomly and the final score of the synth is the average of those scores.
+                Evaluating the quality of the sounds is a subjective task and as such, it is one where human input is needed.
+                The first option is running a standard Interactive Genetic Algorithm, in which the user evaluates each samples' fitness.
+                However, while this gives a lot of control to the user to shape the result of this phase, it results in a rather time consuming process, so we offer the possibility of delegating this process to a machine learning component.
+                SVMs have proven to work well in audio classification tasks, and work well with a relatively small number of examples.
+                The user can train an SVM based regression model with examples of sounds evaluated by them, and then use this model as the fitness function in the genetic algorithm.
+                We have used this option to quickly generate examples from our large dataset and it has proven to produce desirable results.
+                Furthermore, multiple passes of the synths can be applied on the audio, using the output of the first pass as input for the second to achieve different sounds from what could be considered composition of multiple instances of the base synth.
+                While the program can go on to produce an entire composition, it can also be interesting to stop here and use the generated sounds as the basis for human made compositions.
+            </p>
+
+            <h5 class="text-justify mt-5"> Phase 3: Composition </h5>
+            <p class="text-justify">
+                The sounds generated in the synthesis phase are then loaded into samplers that will serve as the "instruments" throughout the generated composition.
+                These samplers organize sounds in a cartesian space with 3 dimensions: pitch (in Hz), duration (in seconds) and volume (in dB).
+                Each sampler is then controlled by a stream of commands in the form of three dimensional vectors indicating the pitch, duration and volume of the desired sound.
+                For each command, the sampler produces a sound by interpolating the <em>n</em> closest sounds to the desired point on the cartesian space and pitch shifting to the desired pitch and applying a volume envelope with the desired duration.
+            </p>
+            <p class="text-justify">
+                There are two methods to achieve the interpolation of the sounds.
+                The preferred method, as it is quicker and provides better results in the context of this thesis, is directly interpolating the samples that represent each of the sounds.
+                An alternative method uses the NSynth WaveNet auto-encoder from the Magenta project to encode the samples from both sounds and the encoded representations are interpolated and decoded into the final sound.
+                While we believe that this method should result in interesting sounds, right now the observed results are sub-par when compared to the other, more straightforward method.
+                As our sounds are rather different from the sounds that the Magenta Team used to train the auto-encoder, we believe that retraining the auto-encoder with more similar examples should lead to better results, however the resources and time required to do so are beyond the scope of this work.
+            </p>
+            <p class="text-justify">
+                After the samplers are generated, we need a sequence of commands to feed the samplers in order to complete this phase.
+                This sequence of commands can be derived from a MIDI file provided by the user, or can be generated from the input audio.
+                The process to generate meaningful sequences of commands from the input audio is as follows:
+            </p>
+
+            <ol class="text-justify">
+                <li> A pitch tracking algorithm is run on the input audio, resulting in a sequence of commands in the form of (duration, pitch, volume) vectors. </li>
+                <li> A fuzzy Markov Model is trained based on the sequence of commands. This model allows for a note to be considered equal to other notes within a proximity threshold, effectively resulting in a more meaningful model. </li>
+                <li> Random paths of a random length within user-defined values are generated from the model. The instant of each command is randomly disturbed in order for the result to be more like a wave of sounds instead of a single note at a time. </li>
+                <li> Each of these sequences of commands are considered a theme. And random themes are then spread throughout the duration of the piece, for a result that is unpredictable, while still maintaining a degree of repetition. The desired duration of the piece is given by the user, and the number of themes to be played are calculated from the spectral flatness of the original sound (a measure of how noise-like or tone-like the sound is), where noisier sounds result in denser pieces, while more tone-like sounds result in more sparser pieces. </li>
+            </ol>
+
+            <p class="text-justify">
+                The results of this phase can also be used on their own, as part of a human-composed piece, or can be used by the following phases of the process to be integrated into the final output of the system.
+            </p>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Khunan <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/composition/khunan.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Khunan Fragments <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/composition/fragments-khunan.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Surf <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/composition/surf.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Surf Fragments <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/composition/fragments-surf.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Passing Train <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/composition/passing_train3.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Passing Train Fragments <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/composition/fragments-passing_train3.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <h5 class="text-justify mt-5"> Phase 4: Drone </h5>
+            <p class="text-justify">
+                This phase of the process is entirely optional and works on a completely different plane in order to solve an aesthetic problem of the product from the previous phase.
+                Due to the way the commands are generated, undesireable chunks of silence can end up in the final result.
+                In order to fix this, the system generates an evolving drone that serves as a backdrop to the piece.
+                The drone is created by taking short segments of the source audio, applying a band pass and loopind them.
+                The amplitude of the loops are then modulated by sine waves with different amplitudes, frequencies and durations.
+                A drone is therefore characterized by:
+            </p>
+
+            <ul class="text-justify">
+                <li> A list of loop starts. </li>
+                <li> A list of loop ends. </li>
+                <li> A list of low frequencies for the band pass filters. </li>
+                <li> A list of high frequencies for the band pass filters. </li>
+                <li> A list of amplitudes for the amplitude modulators. </li>
+                <li> A list of phases for the amplitude modulators. </li>
+                <li> A list of frequencies for the amplitude modulators. </li>
+            </ul>
+
+            <p class="text-justify">
+                A population of drones is generated through a genetic algorithm, using as a fitness function the average distance between the spectogram of the generated drone and the spectogram of random segments of the source audio.
+                The final population of drones is combined by modulating the frequencies of each drone by a lower frequency sine wave with different phases and adding up the resulting waves.
+                The final result is a slowly evolving texture that resembles the texture of the original sound without focusing on any particular moment.
+            </p>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Phaser <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/drone/phaser.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Phaser Drone <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/drone/drone-phaser.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Effects <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/drone/effects.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Effects Drone <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/drone/drone-effects.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Lullaby <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/drone/lullaby.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Lullaby Drone <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/drone/drone-lullaby.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <h5 class="text-justify mt-5"> Phase 5: Finalization </h5>
+            <p class="text-justify">
+                The final phase involves joining the fragments and the drone into a coherent final product.
+                A fade in and fade out is applied to the drone to give the piece a sense of beggining and ending.
+                The drone also slightly fades out when the fragments are playing, in order to help that top layer stand out.
+            </p>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Volleyball <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/finalization/volleyball2.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Volleyball Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/finalization/dry-volleyball2.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Strings <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/finalization/strings.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Strings Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/finalization/dry-strings.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Underwater <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/finalization/underwater.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Underwater Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/finalization/dry-underwater.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <p class="text-justify">
+                In order to further glue the composition together and add more interest, it is possible to add a reverb.
+                Instead of adding the same reverb to all the pieces, we use a convolutional reverb.
+                Convolutional reverb works by taking a recording of the space and convolving that with the recording to which we want to apply the reverb.
+                In our case, instead of using a pre-recorded response, we try and calculate the space responce of the source audio.
+                This is done by running an onset detection algorithm on the audio and taking samples of the sound that follows each onset, but before the next onset, or in musical terms, the space between notes.
+                We then apply a decay to the result, as the source audio doesn't have a real decay in most cases.
+                The system also outputs the room sound, so that it can be applied to other compositions.
+            </p>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-3">
+                    <p>
+                        Football <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/reverb/football.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Football Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/reverb/dry-football.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Football Composition with Reverb <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/reverb/piece-football.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-3">
+                    <p>
+                        Loons <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/reverb/loons.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Loons Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/reverb/dry-loons.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-3">
+                    <p>
+                        Loons Composition with Reverb <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/reverb/piece-loons.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <p class="text-justify">
+                Finally, while the system was firstly built with a single channel output in mind, basic stereo support was added.
+                The way stereo works is by actually generating two different compositions, one to be played on the right channel and another for the left channel.
+                Each composition has a different drone and different fragments, however the density of fragments is half of what it was in the mono version.
+                This results in a piece with the same density of fragments when combining the two channels, except half the fragments will come from each channel.
+                Just playing each piece on each channel results in a less than desired experience, as the sounds from each channel sound disconected, possibly even disorienting the listener.
+                In order to fix this, a bit of the right channel is mixed into the left channel, with reversed polarity, and vice versa.
+                This helps tie both channels together, resulting in a more satisfying stereo experience.
+                While this process is rather simple and required very little modifications to the existing system, it is not without its flaws.
+                All of the sounds come either from the left or from the right, instead of sounds comming from different points in space.
+                Also, there is no underlying logic to where the sounds come from, as the two channels are generated independently.
+            </p>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Sports Commentary <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/sports_commentary.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Sports Commentary Stereo Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/stereo-sports_commentary.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Raindrops <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/raindrops.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Raindrops Stereo Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/stereo-raindrops.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Guineafowls <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/guineafowls2.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Guineafowls Stereo Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/stereo-guineafowls2.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Loons <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/loons.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Loons Stereo Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/stereo-loons.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="d-inline-flex flex-wrap justify-content-around align-items-end mt-1 pb-5">
+                <div class="mt-5 px-5">
+                    <p>
+                        Birds <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/birds.mp3">
+                    </audio>
+                </div>
+
+                <i class="fas fa-arrow-right fa-3x" style="opacity: 15%;"></i>
+
+                <div class="mt-5 px-5">
+                    <p>
+                        Birds Stereo Composition <br>
+                    </p>
+                    <audio controls>
+                        <source src="music/soundmusic/stereo/stereo-birds.mp3">
+                    </audio>
+                </div>
+            </div>
+
+            <p class="text-justify">
+                To finish off this tour of the SoundMusic system as it exists now, we present a composition that combines output from the system and a human touch.
+            </p>
+
+            <div class="mt-5 px-5">
+                <p>
+                    SC-1 <br>
+                </p>
+                <audio controls>
+                    <source src="music/soundmusic/interaction.mp3">
+                </audio>
+            </div>
+        </div>
+
+        <div class="container text-center border my-5 p-5">
             <h3> Dataset </h3>
             <p class="lead"> 22/04/2020 </p>
             <p class="text-justify">
                 In the previous examples, the sounds used as the source for the process are quite limited. This is due to the fact that we still hadn't built a proper dataset. Well, that has changed. We now have a dataset of 119 sounds ranging from 30 seconds in length to 30 minutes in length. The sounds come in different formats, all supported by <a href="https://librosa.github.io/">librosa</a>. While we were first planning on using an automated script to collect the dataset, the fact that it would have to manualy check the entries afterwards turned us off from that idea, so we ended up using a manual process to gather the dataset. The sounds all come from <a href="https://freesound.org/">freesound.org</a> and were collected by using each of the search terms in the list bellow and sellecting appropriate results that came up in the first page.
             </p>
 
-            <div class="d-flex flex-wrap justify-content-around mb-5">
-                <ul class="list-group list-group-horizontal">
-                    <li class="list-group-item">Natural Park</li>
-                    <li class="list-group-item">Sports</li>
-                    <li class="list-group-item">Coffee Shop</li>
-                    <li class="list-group-item">Zoo</li>
-                    <li class="list-group-item">Whale Call</li>
-                    <li class="list-group-item">Beach</li>
-                    <li class="list-group-item">Rain</li>
-                    <li class="list-group-item">Storm</li>
-                    <li class="list-group-item">Restaurant</li>
+            <div class="d-flex flex-wrap justify-content-around my-5 text-justify">
+                <ul>
+                    <li>Natural Park</li>
+                    <li>Sports</li>
+                    <li>Coffee Shop</li>
+                    <li>Zoo</li>
+                    <li>Whale Call</li>
+                    <li>Beach</li>
+                    <li>Rain</li>
+                    <li>Storm</li>
+                    <li>Restaurant</li>
                 </ul>
 
-                <ul class="list-group list-group-horizontal">
-                    <li class="list-group-item">Kitchen</li>
-                    <li class="list-group-item">Train</li>
-                    <li class="list-group-item">City</li>
-                    <li class="list-group-item">Building Site</li>
-                    <li class="list-group-item">Library</li>
-                    <li class="list-group-item">Static</li>
-                    <li class="list-group-item">Interference</li>
-                    <li class="list-group-item">Music</li>
-                    <li class="list-group-item">Sound Effect</li>
+                <ul>
+                    <li>Kitchen</li>
+                    <li>Train</li>
+                    <li>City</li>
+                    <li>Building Site</li>
+                    <li>Library</li>
+                    <li>Static</li>
+                    <li>Interference</li>
+                    <li>Music</li>
+                    <li>Sound Effect</li>
                 </ul>
             </div>
 

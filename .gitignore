@@ -135,7 +135,7 @@ systems/
 dataset/
 
 # My run script xD
-run.bat
+*.bat
 
 # Instruments
 soundfonts/
@@ -149,3 +149,5 @@ temp/
 
 #old files
 old/
+
+nsynth/wavenet-ckpt
