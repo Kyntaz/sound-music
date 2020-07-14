@@ -4,8 +4,11 @@ from matplotlib import pyplot as plt
 import SoundMusic as sm
 from SoundMusic import SoundObject
 from SoundMusic.mustruct import Note
+from SoundMusic.synth import get_features
+import sklearn as skl
 
 MAX_SAMPLES = 3
+N_SAMPLERS = 5
 
 class Sampler3:
     def __init__(self, lso):
@@ -55,9 +58,16 @@ class Sampler3:
         oso = sm.effects.band_pass(SoundObject(out), note.pitch, 20000)
         return oso
 
-def make_samplers(sampler_class, synths, lso):
-    samplers = [sampler_class(lso)]
+def make_samplers(sampler_class, synths, lso, n_samplers=N_SAMPLERS):
+    nlso = [] + lso
     for synth in synths:
-        nlso = [synth.gen(so) for so in lso]
-        samplers.append(sampler_class(nlso))
-    return samplers
+        nlso += [synth.gen(so) for so in lso]
+    
+    feats = [get_features(so) for so in nlso]
+    clusters = skl.cluster.KMeans(n_samplers)
+    clusters.fit(feats)
+    sound_mat = [[] for _ in range(n_samplers)]
+    for idx, so in zip(clusters.labels_, nlso):
+        sound_mat[idx].append(so)
+
+    return [sampler_class(sounds) for sounds in sound_mat]

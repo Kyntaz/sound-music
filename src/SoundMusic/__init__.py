@@ -9,3 +9,5 @@ import SoundMusic.waves
 import SoundMusic.effects
 import SoundMusic.drone
 import SoundMusic.batch
+import SoundMusic.generation
+import SoundMusic.smconfig

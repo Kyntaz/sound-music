@@ -273,3 +273,42 @@ def make_song(structs, density):
         out.append(struct)
 
     return Structure(out, 0)
+
+def read_midi(path, samplers, polyphonic = False):
+    mid = mido.MidiFile(path)
+    out = []
+    for i, track in enumerate(mid.tracks):
+        sampler = samplers[i]
+        notes = {}
+        last_note = (None, 0, 0)
+        t_ptr = 0
+
+        for msg in track:
+            t_ptr += msg.time
+            tempo = 500000
+            if msg.type == "note_on":
+                notes[msg.note] = (t_ptr, msg.velocity / 255)
+                if last_note[0] != None and not polyphonic:
+                    note, start, vel = last_note
+                    dur = t_ptr - start
+                    dur = mido.tick2second(dur, mid.ticks_per_beat, tempo)
+                    start = mido.tick2second(start, mid.ticks_per_beat, tempo)
+                    if dur > 0.1:
+                        note = NoteObject(Note(lr.midi_to_hz(msg.note), vel, dur), sampler, start)
+                        out.append(note)
+                last_note = (msg.note, t_ptr, msg.velocity / 255)
+            if msg.type == "note_off":
+                try:
+                    start, vel = notes[msg.note]
+                    dur = t_ptr - start
+                    dur = mido.tick2second(dur, mid.ticks_per_beat, tempo)
+                    start = mido.tick2second(start, mid.ticks_per_beat, tempo)
+                    note = NoteObject(Note(lr.midi_to_hz(msg.note), vel, dur), sampler, start)
+                    out.append(note)
+                except:
+                    print("Warning: Problems reading MIDI.")
+            if msg.type == "set_tempo":
+                tempo = msg.tempo
+                print(f"Read MIDI tempo: {tempo}")
+
+    return Structure(out, 0)
