@@ -11,3 +11,4 @@ import SoundMusic.drone
 import SoundMusic.batch
 import SoundMusic.generation
 import SoundMusic.smconfig
+import SoundMusic.gensound
