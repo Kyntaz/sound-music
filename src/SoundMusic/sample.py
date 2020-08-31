@@ -58,11 +58,15 @@ class Sampler3:
         oso = sm.effects.band_pass(SoundObject(out), note.pitch, 20000)
         return oso
 
-def make_samplers(sampler_class, synths, lso, n_samplers=N_SAMPLERS):
+def make_samplers(sampler_class, synths, lso, save=False, op="", n_samplers=N_SAMPLERS):
     nlso = [] + lso
     for synth in synths:
         nlso += [synth.gen(so) for so in lso]
     
+    if save:
+        for i,so in enumerate(nlso):
+            so.write(f"{op}/snd_{i}.wav")
+
     feats = [get_features(so) for so in nlso]
     clusters = skl.cluster.KMeans(n_samplers)
     clusters.fit(feats)

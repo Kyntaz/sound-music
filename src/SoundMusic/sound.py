@@ -12,7 +12,7 @@ SAMPLE_RATE = 22100
 class SoundObject:
     def __init__(self, samples, t=0, *, normalize=True):
         assert len(samples) > 0.1 * SAMPLE_RATE
-        self.samples = samples
+        self.samples = np.asfortranarray(samples)
         self.t = 0
         if normalize: self.normalize()
 
@@ -55,13 +55,15 @@ class SoundObject:
         return np.array(pitch), mag
 
     def get_normalize_to(self, peak):
-        return SoundObject(self.samples * peak / np.max(np.abs(self.samples)))
+        og_peak = np.max(np.abs(self.samples))
+        if og_peak <= 0: return self
+        return SoundObject(self.samples * peak / og_peak)
 
     def get_padded(self, dur):
         target_samps = lr.time_to_samples(dur, SAMPLE_RATE)
         missing_samps = target_samps - self.samples.size
         if missing_samps <= 0:
-            return self.samples
+            return self.samples[:target_samps]
         return np.concatenate([
             self.samples,
             np.zeros(missing_samps)

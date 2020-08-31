@@ -6,18 +6,17 @@ import pickle
 import mido
 
 
-def mono(in_path, out_path, svm=None):
+def mono(in_path, out_path, svm=None, midi=True, fg=True, bg=True, ssnds=True):
     svm = svm or "../svm.pickle"
     out = out_path
-    file = in_path
 
     try:
-        os.mkdir(f"../output/{out}")
+        os.mkdir(out_path)
     except FileExistsError:
         pass
 
     print("Opening sound.")
-    source = sm.sound.load(f"../dataset/{file}")
+    source = sm.sound.load(in_path)
 
     print("Extracting sounds.")
     lso = sm.extraction.get_sounds(source)
@@ -27,7 +26,7 @@ def mono(in_path, out_path, svm=None):
         synths = sm.synth.fast_evolve(sm.synth.SoundSynth, lso, pickle.load(f))
 
     print("Making samplers.")
-    samplers = sm.sample.make_samplers(sm.sample.Sampler3, synths, lso)
+    samplers = sm.sample.make_samplers(sm.sample.Sampler3, synths, lso, ssnds, out)
 
     print("Generating musical model.")
     model = sm.mustruct.build_model(5, source)
@@ -44,11 +43,11 @@ def mono(in_path, out_path, svm=None):
     drone1 = sm.drone.sevolve(source, fragments.duration + 10, 0.05)
 
     print("Writing audio.")
-    fragments.write(f"../output/{out}/fragments.wav")
-    drone1.write(f"../output/{out}/drone.wav")
+    if fg: fragments.write(f"{out}/fragments.wav")
+    if bg: drone1.write(f"{out}/drone.wav")
 
     print("Writing midi.")
-    song.save_midi(f"../output/{out}/fragments.mid")
+    if midi: song.save_midi(f"{out}/fragments.mid")
 
     print("Modulating the drone.")
     points = song.get_instants()
@@ -57,25 +56,25 @@ def mono(in_path, out_path, svm=None):
 
     print("Generating final piece.")
     piece = sm.sound.join([drone, fragments])
-    piece.write(f"../output/{out}/dry.wav")
+    piece.write(f"{out}/dry.wav")
     room = sm.effects.get_room(source, 1.0)
     verb = sm.effects.reverberate(room, piece)
     piece = sm.SoundObject(piece.samples + verb.get_normalize_to(0.5).samples)
-    piece.write(f"../output/{out}/mono.wav")
-    room.write(f"../output/{out}/room.wav")
+    piece.write(f"{out}/mono.wav")
+    room.write(f"{out}/room.wav")
 
-def stereo(in_path, out_path, svm=None):
+def stereo(in_path, out_path, svm=None, midi=True, fg=True, bg=True, ssnds=True):
     svm = svm or "../svm.pickle"
     out = out_path
     file = in_path
 
     try:
-        os.mkdir(f"../output/{out}")
+        os.mkdir(out)
     except FileExistsError:
         pass
 
     print("Opening sound.")
-    source = sm.sound.load(f"../dataset/{file}")
+    source = sm.sound.load(file)
 
     print("Extracting sounds.")
     lso = sm.extraction.get_sounds(source)
@@ -85,7 +84,7 @@ def stereo(in_path, out_path, svm=None):
         synths = sm.synth.fast_evolve(sm.synth.SoundSynth, lso, pickle.load(f))
 
     print("Making samplers.")
-    samplers = sm.sample.make_samplers(sm.sample.Sampler3, synths, lso)
+    samplers = sm.sample.make_samplers(sm.sample.Sampler3, synths, lso, ssnds, out)
 
     print("Generating musical model.")
     model = sm.mustruct.build_model(5, source)
@@ -107,14 +106,17 @@ def stereo(in_path, out_path, svm=None):
     drone2 = sm.drone.sevolve(source, dur + 10, 0.05)
 
     print("Writing audio.")
-    fragments1.write(f"../output/{out}/fragmentsL.wav")
-    drone1.write(f"../output/{out}/droneL.wav")
-    fragments2.write(f"../output/{out}/fragmentsR.wav")
-    drone2.write(f"../output/{out}/droneR.wav")
+    if fg:
+        fragments1.write(f"{out}/fragmentsL.wav")
+        fragments2.write(f"{out}/fragmentsR.wav")
+    if bg:
+        drone2.write(f"{out}/droneR.wav")
+        drone1.write(f"{out}/droneL.wav")
 
     print("Writing midi.")
-    song1.save_midi(f"../output/{out}/fragmentsL.mid")
-    song2.save_midi(f"../output/{out}/fragmentsR.mid")
+    if midi:
+        song1.save_midi(f"{out}/fragmentsL.mid")
+        song2.save_midi(f"{out}/fragmentsR.mid")
 
     print("Modulating the drone.")
     points = song1.get_instants()
@@ -126,18 +128,18 @@ def stereo(in_path, out_path, svm=None):
 
     print("Generating final piece.")
     piece1 = sm.sound.join([drone1, fragments1])
-    piece1.write(f"../output/{out}/dryL.wav")
+    piece1.write(f"{out}/dryL.wav")
     piece2 = sm.sound.join([drone2, fragments2])
-    piece2.write(f"../output/{out}/dryR.wav")
+    piece2.write(f"{out}/dryR.wav")
     room = sm.effects.get_room(source, 1.0)
     verb1 = sm.effects.reverberate(room, piece1)
     verb2 = sm.effects.reverberate(room, piece2)
     piece1 = sm.SoundObject(piece1.samples + verb1.get_normalize_to(0.5).samples)
     piece2 = sm.SoundObject(piece2.samples + verb2.get_normalize_to(0.5).samples)
-    piece1.write(f"../output/{out}/monoL.wav")
-    piece2.write(f"../output/{out}/monoR.wav")
-    room.write(f"../output/{out}/room.wav")
-    sm.sound.write_stereo(piece1, piece2, 0.75, f"../output/{out}/stereo.wav")
+    piece1.write(f"{out}/monoL.wav")
+    piece2.write(f"{out}/monoR.wav")
+    room.write(f"{out}/room.wav")
+    sm.sound.write_stereo(piece1, piece2, 0.75, f"{out}/stereo.wav")
 
 def render_midi_mono(in_path, out_path, midi_path, svm=None):
     svm = svm or "../svm.pickle"
@@ -145,7 +147,7 @@ def render_midi_mono(in_path, out_path, midi_path, svm=None):
     file = in_path
 
     try:
-        os.mkdir(f"../output/{out}")
+        os.mkdir(f"{out}")
     except FileExistsError:
         pass
 
@@ -161,7 +163,7 @@ def render_midi_mono(in_path, out_path, midi_path, svm=None):
 
     print("Making samplers.")
     n_samplers = len(mido.MidiFile(midi_path).tracks)
-    samplers = sm.sample.make_samplers(sm.sample.Sampler3, synths, lso, n_samplers)
+    samplers = sm.sample.make_samplers(sm.sample.Sampler3, synths, lso, n_samplers=n_samplers)
 
     print("Generate song.")
     song = sm.mustruct.read_midi(midi_path, samplers)
@@ -171,17 +173,17 @@ def render_midi_mono(in_path, out_path, midi_path, svm=None):
     drone1 = sm.drone.sevolve(source, fragments.duration, 0.05)
 
     print("Writing audio.")
-    fragments.write(f"../output/{out}/fragments.wav")
-    drone1.write(f"../output/{out}/drone.wav")
+    fragments.write(f"{out}/fragments.wav")
+    drone1.write(f"{out}/drone.wav")
 
     print("Modulating the drone.")
     drone = sm.drone.side_chain([], drone1)
 
     print("Generating final piece.")
     piece = sm.sound.join([drone, fragments])
-    piece.write(f"../output/{out}/dry.wav")
+    piece.write(f"{out}/dry.wav")
     room = sm.effects.get_room(source, 1.0)
     verb = sm.effects.reverberate(room, piece)
     piece = sm.SoundObject(piece.samples + verb.get_normalize_to(0.5).samples)
-    piece.write(f"../output/{out}/mono.wav")
-    room.write(f"../output/{out}/room.wav")
+    piece.write(f"{out}/mono.wav")
+    room.write(f"{out}/room.wav")

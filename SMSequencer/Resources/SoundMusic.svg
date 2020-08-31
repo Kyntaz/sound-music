@@ -15,10 +15,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="SoundMusic.svg"
-   inkscape:export-filename="D:\Stuff\sound-music\docs\SoundMusic.png"
-   inkscape:export-xdpi="614.35999"
-   inkscape:export-ydpi="614.35999">
+   sodipodi:docname="SoundMusic.svg">
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -62,7 +59,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.70710678"
-     inkscape:cx="496.66026"
+     inkscape:cx="753.34002"
      inkscape:cy="73.053208"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -82,7 +79,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
