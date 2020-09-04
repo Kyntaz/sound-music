@@ -30,6 +30,7 @@ private:
 	float loQ = 0;
 	bool playing = false;
 	SmsynthAudioProcessor* owner;
+	juce::dsp::ProcessSpec spec;
 
 public:
 	MappedSampleVoice(SmsynthAudioProcessor* processor);

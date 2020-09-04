@@ -25,8 +25,6 @@ bool MappedSampleVoice::canPlaySound(juce::SynthesiserSound* sound) {
 
 void MappedSampleVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition) {
 	float targetPitch = pow(2.0f, (midiNoteNumber - 69.0f) / 12.0f) * 440.0f;
-	hiQ = *(juce::AudioParameterFloat*)(owner->getState()->getParameter("hiPass"));
-	loQ = *(juce::AudioParameterFloat*)(owner->getState()->getParameter("loPass"));
 	if (curr_pitch == 0) curr_pitch = midiNoteNumber;
 
 	juce::ADSR::Parameters params;
@@ -38,18 +36,6 @@ void MappedSampleVoice::startNote(int midiNoteNumber, float velocity, juce::Synt
 	if (!playing)
 		adsr.noteOn();
 
-	if (hiQ > 0.0f) {
-		auto bw = (1.01 - hiQ) * 5e2;
-		auto q = targetPitch / bw;
-		*hiFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(getSampleRate(), targetPitch - bw);
-	}
-	if (loQ > 0.0f) {
-		auto bw = (1.01 - loQ) * 5e2;
-		auto q = targetPitch / bw;
-		*loFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(getSampleRate(), targetPitch + bw);
-	}
-
-	juce::dsp::ProcessSpec spec;
 	spec.sampleRate = getSampleRate();
 	spec.maximumBlockSize = owner->currBlockSize;
 	spec.numChannels = 2;
@@ -162,6 +148,24 @@ void MappedSampleVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, 
 			curr_sample_lo[grain] += inc_lo;
 			curr_sample_hi[grain] += inc_hi;
 		}
+	}
+
+	hiQ = *(juce::AudioParameterFloat*)(owner->getState()->getParameter("hiPass"));
+	loQ = *(juce::AudioParameterFloat*)(owner->getState()->getParameter("loPass"));
+	if (hiQ > 0.0f) {
+		auto bw = (1.01 - hiQ) * 5e2;
+		auto q = targetPitch / bw;
+		auto f = targetPitch - bw;
+		if (f > 0) {
+			*hiFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(getSampleRate(), f);
+			hiFilter.reset();
+		}
+	}
+	if (loQ > 0.0f) {
+		auto bw = (1.01 - loQ) * 5e2;
+		auto q = targetPitch / bw;
+		*loFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(getSampleRate(), targetPitch + bw);
+		loFilter.reset();
 	}
 
 	juce::dsp::AudioBlock<float> block(outputBuffer);
