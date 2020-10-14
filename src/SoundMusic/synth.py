@@ -10,10 +10,11 @@ import sklearn as skl
 
 # Settings for the Evolutionary Algorithm:
 GENERATIONS = 100
-POPULATION = 5
+POPULATION = 20
 ELITISM = 0.5
 AVG_MUTATIONS = 3
 VAR_MUTATIONS = 5
+CROSS_ALPHA = 0.3
 
 # Settings for SVM evaluation of fitness.
 SAMPLES = 3
@@ -297,14 +298,32 @@ class AdditiveSynth(ISynth):
 
         return SoundObject(canvas)
 
+class WaveSynth:
+    def __init__(self):
+        self.freq = SynthParam.pfloat(0.1, 880)
+        self.params = [self.freq]
+
+    def gen(self, so: SoundObject):
+        dur = so.duration
+        ns = np.size(so.samples)
+        idxs = np.linspace(0, ns * dur * self.freq.v, ns)
+        samps = np.interp(idxs, np.linspace(0, ns, ns), so.samples, period=ns)
+        return SoundObject(samps)
+
 class SoundSynth(ISynth):
     def __init__(self):
         self.synths = [
             SpectralGrainsSynth(),
             GranularSynth(),
+            GranularSynth(),
             PhaseDistortionSynth(),
             FrequencyModulationSynth(),
-            AdditiveSynth()
+            FrequencyModulationSynth(),
+            AdditiveSynth(),
+            AdditiveSynth(),
+            WaveSynth(),
+            WaveSynth(),
+            WaveSynth()
         ]
         self.volumes = [SynthParam.pfloat(-1,1) for _ in self.synths]
         self.mod_shapes = [SynthParam.plist([
@@ -343,7 +362,9 @@ class SoundSynth(ISynth):
 def crossover(synth1, synth2):
     geno1 = synth1.genome
     geno2 = synth2.genome
-    geno_c = [random.choice([g1,g2]) for g1,g2 in zip(geno1, geno2)]
+    geno_c = [random.choice([g1,g2]) if not isinstance(g1, float)
+        else (CROSS_ALPHA * g1 + (1 - CROSS_ALPHA) * g2) for
+        g1,g2 in zip(geno1, geno2)]
     return type(synth1).from_genome(geno_c)
 
 def fitness(synth, lso):
@@ -376,11 +397,24 @@ def get_model(user_inputs):
 
 def fast_fitness(synth, lso, model):
     features = []
-    for _ in range(SAMPLES):
-        so = random.choice(lso)
-        so = synth.gen(so)
+    for tso in lso:
+        so = synth.gen(tso)
         features.append(get_features(so))
     return np.mean(model.predict(features))
+
+def target_fitness(synth, lso, target):
+    diff = 0
+    for tso in lso:
+        so = synth.gen(tso)
+        f1 = so.get_f0()
+        f2 = target.get_f0()
+        fratio = f2 / f1
+        samps = lr.resample(target.samples, sm.sound.SAMPLE_RATE, int(sm.sound.SAMPLE_RATE * fratio))
+        samps = SoundObject(samps).get_padded(so.duration)
+        fft1 = np.abs(lr.stft(samps))
+        fft2 = np.abs(lr.stft(so.samples))
+        diff += np.mean(np.abs(fft1 - fft2))
+    return - diff / len(lso)
 
 def evolve(synth_class, lso):
     population = []
@@ -435,9 +469,12 @@ def evolve(synth_class, lso):
 
 def fast_evolve(synth_class, lso, model):
     population = []
+    if isinstance(model, SoundObject): currfit = target_fitness
+    else: currfit = fast_fitness
+
     for _ in range(POPULATION):
         synth = synth_class()
-        fit = fast_fitness(synth, lso, model)
+        fit = currfit(synth, lso, model)
         population.append([synth, fit])
 
     for _ in range(GENERATIONS):
@@ -467,12 +504,13 @@ def fast_evolve(synth_class, lso, model):
             n_mutations = max(int(random.normalvariate(AVG_MUTATIONS, VAR_MUTATIONS)), 0)
             for _ in range(n_mutations): child.mutate()
 
-            fit = fast_fitness(child, lso, model)
+            fit = currfit(child, lso, model)
             new_population.append([child, fit])
             
+        print(max(fit for _,fit in new_population))
         population = new_population
     
-    return [synth for synth,_ in population]
+    return [synth for synth,_ in sorted(population, key=lambda ss: ss[1], reverse=True)]
 
 def make_synths(synth_class):
     return [synth_class() for _ in range(POPULATION)]

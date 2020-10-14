@@ -3,9 +3,11 @@ import copy
 import random
 import librosa as lr
 import numpy as np
+import scipy as sp
 import SoundMusic as sm
 from SoundMusic import SoundObject
 import mido
+import matplotlib.pyplot as plt
 
 # Note comparison epsilons:
 FREQ_EPS = 2
@@ -24,6 +26,12 @@ ELITISM = 0.5
 MUTATION_PITCH = 10.0
 MUTATION_MAG = 0.3
 MUTATION_DUR = 1.0
+
+# Song Grammars
+EMBRYO = [0, 1, 0]
+COMPLEXITY = 3
+GPASSES = 5
+RULE_STEP = 3
 
 Note = collections.namedtuple("Note", "pitch, mag, dur")
 
@@ -144,9 +152,9 @@ def build_model(n, source: SoundObject):
         if o2 - o1 < sm.sound.SAMPLE_RATE * 0.1:
             continue
         so = SoundObject(source.samples[o1:o2])
-        ptrack, mtrack = so.track_pitch()
+        _, mtrack = so.track_pitch()
         
-        pitch = max(np.mean(ptrack), 0)
+        pitch = max(so.get_f0(), 0)
         mag = max(np.mean(mtrack), 0)
         dur = max(so.duration, 0.15)
 
@@ -312,3 +320,67 @@ def read_midi(path, samplers, polyphonic = False):
                 print(f"Read MIDI tempo: {tempo}")
 
     return Structure(out, 0)
+
+def make_rule(nstructs):
+    return [
+        random.randint(0, nstructs),
+        [random.randint(0, nstructs) for _ in range(random.randint(1, COMPLEXITY))]
+    ]
+
+def make_sequence(grammar):
+    seq = copy.copy(EMBRYO)
+    for _ in range(GPASSES):
+        nseq = []
+        for sym in seq:
+            for rule in grammar:
+                head, body = copy.deepcopy(rule)
+                if head == sym:
+                    nseq += body
+                    break
+            else:
+                nseq += [sym]
+        seq = nseq
+    return seq
+
+def seq2song(seq, structs):
+    out = []
+    t = 10
+    for sym in seq:
+        struct = copy.deepcopy(structs[sym])
+        dur = max(so.end for so in struct.get_sounds())
+        struct.t = max(random.normalvariate(t, dur), 0)
+        out.append(struct)
+        t += dur
+    return Structure(out, 0)
+
+def song_fit(struct):
+    so = struct.get_sound()
+    fft = lr.stft(so.samples)
+    tension = np.log(np.transpose(np.abs(fft)) @ lr.fft_frequencies(sm.sound.SAMPLE_RATE))
+    tension = np.maximum(tension, 0)
+    tension = sp.signal.resample(tension, int(so.duration))
+    peak = np.argmax(tension)
+    hi = np.max(tension)
+    low = np.min(tension)
+    gold_peak = so.duration / sp.constants.golden
+
+    return abs(low - hi) - abs(so.duration - 60) / 10 - abs(peak - gold_peak)
+
+def evolve_song(structs):
+    nstructs = len(structs) - 1
+    pop = [[make_rule(nstructs) for _ in range(RULE_STEP)] for _ in range(POPULATION)]
+    for _ in range(GENERATIONS):
+        best_gram = pop[0]
+        best_score = - np.inf
+        for gram in pop:
+            seq = make_sequence(gram)
+            song = seq2song(seq, structs)
+            score = song_fit(song)
+            if score > best_score:
+                best_gram = gram
+                best_score = score
+        print(best_score)
+        pop = [[make_rule(nstructs) for _ in range(RULE_STEP)] + best_gram for _ in range(POPULATION)] + [best_gram]
+
+    seq = make_sequence(best_gram)
+    return seq2song(seq, structs)

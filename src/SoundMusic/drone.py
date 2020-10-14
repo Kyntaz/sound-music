@@ -12,6 +12,7 @@ MAX_FREQ = 1e3
 MAX_LOW_FREQ = 0.2
 MIN_SAMP_LEN = 0.2
 MAX_SAMP_LEN = 5.0
+TRIALS = 5
 
 POPULATION = 10
 GENERATIONS = 100
@@ -22,7 +23,7 @@ SAMPLE_DURATION = 10
 
 MAX_DRONE_DUR = 20
 MIN_DRONE_DUR = 5
-SWELL = 10
+SWELL = 0.1
 
 class Drone:
     def __init__(self, freqs, phases, amps, amp_freqs, amp_phases):
@@ -112,14 +113,17 @@ def make_random_sdrone(so: SoundObject):
     )
 
 def loss(drone: Drone, so: SoundObject):
-    drone_wave = drone.play(SAMPLE_DURATION)
-    st = random.uniform(0, so.duration - SAMPLE_DURATION)
-    et = st + SAMPLE_DURATION
-    ss = lr.time_to_samples(st, sm.sound.SAMPLE_RATE)
-    es = lr.time_to_samples(et, sm.sound.SAMPLE_RATE)
-    stft1 = lr.stft(so.samples[ss:es])
-    stft2 = lr.stft(drone_wave.samples)
-    return np.mean(np.abs(stft1 - stft2))
+    out = 0
+    for _ in range(TRIALS):
+        drone_wave = drone.play(SAMPLE_DURATION)
+        st = random.uniform(0, so.duration - SAMPLE_DURATION)
+        et = st + SAMPLE_DURATION
+        ss = lr.time_to_samples(st, sm.sound.SAMPLE_RATE)
+        es = lr.time_to_samples(et, sm.sound.SAMPLE_RATE)
+        stft1 = lr.stft(so.samples[ss:es])
+        stft2 = lr.stft(drone_wave.samples)
+        out += np.mean(np.abs(stft1 - stft2))
+    return out / TRIALS
 
 def crossover(d1: Drone, d2: Drone):
     return Drone(
@@ -221,6 +225,7 @@ def sevolve(so, dur, amp):
             new_population.append([child, lval])
 
         population = new_population
+        print(max(fit for _,fit in population))
 
     return join_drones([ind[0] for ind in population], dur, amp)
 
@@ -235,7 +240,7 @@ def side_chain(point_durs_int, so: SoundObject):
         curve -= bump
 
     curve = np.maximum(curve, 0.0)
-    f = int(SWELL * sm.sound.SAMPLE_RATE)
+    f = int(SWELL * so.duration * sm.sound.SAMPLE_RATE)
     l = curve.size
     curve = np.concatenate([
         np.linspace(0, 1, f),

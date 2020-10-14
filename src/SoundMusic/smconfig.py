@@ -42,8 +42,8 @@ def synth_config(
     out = ""
     i = 0
     for so in config:
-        ptrack, vtrack = so.track_pitch()
-        pitch = lr.hz_to_midi(np.mean(ptrack))
+        _, vtrack = so.track_pitch()
+        pitch = lr.hz_to_midi(so.get_f0())
         vel = np.clip(np.mean(vtrack) * 127, 0, 127)
         path = os.path.dirname(out_path)
         fname = os.path.splitext(os.path.basename(out_path))[0] + f"_s{i}.wav"

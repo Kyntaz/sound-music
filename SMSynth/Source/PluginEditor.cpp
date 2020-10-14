@@ -27,6 +27,7 @@ SmsynthAudioProcessorEditor::SmsynthAudioProcessorEditor (SmsynthAudioProcessor&
 	addAndMakeVisible(evolutionParams);
 	evolutionParams.setText("Evolution Parameters", juce::dontSendNotification);
 	evolutionParams.setJustificationType(juce::Justification(juce::Justification::centred));
+	evolutionParams.setFont(evolutionParams.getFont().boldened());
 
 	addAndMakeVisible(genSld);
 	genSld.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
@@ -103,6 +104,15 @@ SmsynthAudioProcessorEditor::SmsynthAudioProcessorEditor (SmsynthAudioProcessor&
 	grainSld_l.setText("Grains", juce::dontSendNotification);
 	grainSld_l.setJustificationType(juce::Justification(juce::Justification::centred));
 	grainSld_a.reset(new SliderAttachment(*(audioProcessor.getState()), "grains", grainSld));
+
+	addAndMakeVisible(speedSld);
+	speedSld.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+	speedSld.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 20);
+	addAndMakeVisible(speedSld_l);
+	speedSld_l.attachToComponent(&speedSld, false);
+	speedSld_l.setText("Speed", juce::dontSendNotification);
+	speedSld_l.setJustificationType(juce::Justification(juce::Justification::centred));
+	speedSld_a.reset(new SliderAttachment(*(audioProcessor.getState()), "speed", speedSld));
 
 	addAndMakeVisible(aSld);
 	aSld.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
@@ -189,9 +199,9 @@ void SmsynthAudioProcessorEditor::resized()
 
 	auto paramsX = 440;
 	auto paramsY = 120;
-	auto paramsW = 100;
+	auto paramsW = 70;
 	auto paramsH = 100;
-	auto paramsP = 20;
+	auto paramsP = 10;
 
 	auto adsrX = 450;
 	auto adsrY = 250;
@@ -211,6 +221,7 @@ void SmsynthAudioProcessorEditor::resized()
 	hiSld.setBounds(paramsX, paramsY, paramsW, paramsH);
 	loSld.setBounds(paramsX + paramsW + paramsP, paramsY, paramsW, paramsH);
 	grainSld.setBounds(paramsX + paramsW * 2 + paramsP * 2, paramsY, paramsW, paramsH);
+	speedSld.setBounds(paramsX + paramsW * 3 + paramsP * 3, paramsY, paramsW, paramsH);
 	aSld.setBounds(adsrX, adsrY, adsrW, adsrH);
 	dSld.setBounds(adsrX + adsrW + adsrP, adsrY, adsrW, adsrH);
 	sSld.setBounds(adsrX + adsrW * 2 + adsrP * 2, adsrY, adsrW, adsrH);

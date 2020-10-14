@@ -54,13 +54,17 @@ class SoundObject:
         mag = np.max(mt, axis=1)
         return np.array(pitch), mag
 
+    def get_f0(self):
+        f0 = lr.yin(self.samples, 65, 2093, SAMPLE_RATE)
+        return np.mean(f0)
+
     def get_normalize_to(self, peak):
         og_peak = np.max(np.abs(self.samples))
         if og_peak <= 0: return self
         return SoundObject(self.samples * peak / og_peak)
 
     def get_padded(self, dur):
-        target_samps = lr.time_to_samples(dur, SAMPLE_RATE)
+        target_samps = int(round(dur * SAMPLE_RATE))
         missing_samps = target_samps - self.samples.size
         if missing_samps <= 0:
             return self.samples[:target_samps]

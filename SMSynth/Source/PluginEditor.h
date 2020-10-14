@@ -81,6 +81,10 @@ private:
 	juce::Label grainSld_l;
 	std::unique_ptr<SliderAttachment> grainSld_a;
 
+	juce::Slider speedSld;
+	juce::Label speedSld_l;
+	std::unique_ptr<SliderAttachment> speedSld_a;
+
 	juce::Slider aSld;
 	juce::Label aSld_l;
 	std::unique_ptr<SliderAttachment> aSld_a;

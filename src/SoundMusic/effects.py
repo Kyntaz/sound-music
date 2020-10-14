@@ -25,6 +25,7 @@ def get_room(so: SoundObject, dur):
             response = so.samples[ss:es]
             room += SoundObject(response).get_padded(dur)
             count += 1
+    if count == 0: return None
     room /= count
     room *= np.linspace(1, 0.0,  dur_samps)
     return SoundObject(room)

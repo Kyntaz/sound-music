@@ -31,6 +31,7 @@ SmsynthAudioProcessor::SmsynthAudioProcessor()
 			std::make_unique<juce::AudioParameterFloat>("hiPass", "High Pass", 0.0f, 1.0f, 0.5f),
 			std::make_unique<juce::AudioParameterFloat>("loPass", "Low Pass", 0.0f, 1.0f, 0.0f),
 			std::make_unique<juce::AudioParameterInt>("grains", "Grains", 1, 20, 3),
+			std::make_unique<juce::AudioParameterInt>("speed", "Speed", 0, 10, 3),
 			std::make_unique<juce::AudioParameterFloat>("atk", "Attack", 0.0f, 5.0f, 0.1f),
 			std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.0f, 5.0f, 0.1f),
 			std::make_unique<juce::AudioParameterFloat>("sus", "Sustain", 0.0f, 1.0f, 1.0f),

@@ -71,6 +71,7 @@ void MappedSampleVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, 
 		return;
 	}
 
+	int speed = *(juce::AudioParameterInt*)owner->getState()->getParameter("speed");
 	curr_pitch = std::abs(curr_pitch + (float)getCurrentlyPlayingNote()) / 2.0f;
 	DBG(curr_pitch);
 	float targetNote = curr_pitch + curr_shift;
@@ -145,8 +146,8 @@ void MappedSampleVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, 
 			for (int j = 0; j < outputBuffer.getNumChannels(); j++)
 				outputBuffer.addSample(j, startSample + i,
 					(s_lo * (1.0f - p) + s_hi * p) * curr_vel * (loQ * hiQ * 9.0f + 1.0f) / curr_grains);
-			curr_sample_lo[grain] += inc_lo;
-			curr_sample_hi[grain] += inc_hi;
+			curr_sample_lo[grain] = std::fmod(curr_sample_lo[grain] + inc_lo * pow(2, speed), 5e4 * 5);
+			curr_sample_hi[grain] = std::fmod(curr_sample_hi[grain] + inc_hi * pow(2, speed), 5e4 * 5);
 		}
 	}
 
