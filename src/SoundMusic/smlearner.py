@@ -22,7 +22,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(30, 20, 501, 141))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("src\\../docs/SoundMusic.png"))
+        self.label.setPixmap(QtGui.QPixmap("../docs/SoundMusic.png"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
