@@ -156,7 +156,7 @@ SmsynthAudioProcessorEditor::SmsynthAudioProcessorEditor (SmsynthAudioProcessor&
 
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize(800, 420);
+    setSize(500, 420);
 
 	chkStatus();
 }
@@ -197,27 +197,27 @@ void SmsynthAudioProcessorEditor::resized()
 	auto evolutionH = 25;
 	auto evolutionP = 20;
 
-	auto paramsX = 440;
-	auto paramsY = 120;
+	auto paramsX = 50;
+	auto paramsY = 150;
 	auto paramsW = 70;
 	auto paramsH = 100;
-	auto paramsP = 10;
+	auto paramsP = 40;
 
-	auto adsrX = 450;
-	auto adsrY = 250;
+	auto adsrX = 80;
+	auto adsrY = 280;
 	auto adsrW = 30;
 	auto adsrH = 80;
-	auto adsrP = 20;
+	auto adsrP = 40;
 
 	logoImg->setBounds(logoPad, logoPad, logoWidth, logoHeight);
 	titleLbl.setBounds(titleX, titleY, titleW, titleH);
 	statusTxt.setBounds(debugBoxX, debugBoxY, debugBoxW, debugBoxH);
-	evolutionParams.setBounds(evolutionX, evolutionY - 20, evolutionW, evolutionH);
+	/*evolutionParams.setBounds(evolutionX, evolutionY - 20, evolutionW, evolutionH);
 	genSld.setBounds(evolutionX, evolutionY + evolutionH + evolutionP, evolutionW, evolutionH);
 	mutSld.setBounds(evolutionX, evolutionY + evolutionH * 2 + evolutionP * 2, evolutionW, evolutionH);
 	varSld.setBounds(evolutionX, evolutionY + evolutionH * 3 + evolutionP * 3, evolutionW, evolutionH);
 	eliteSld.setBounds(evolutionX, evolutionY + evolutionH * 4 + evolutionP * 4, evolutionW, evolutionH);
-	fitnessTxt.setBounds(evolutionX, evolutionY + evolutionH * 5 + evolutionP * 5, debugBoxW, evolutionH);
+	fitnessTxt.setBounds(evolutionX, evolutionY + evolutionH * 5 + evolutionP * 5, debugBoxW, evolutionH);*/
 	hiSld.setBounds(paramsX, paramsY, paramsW, paramsH);
 	loSld.setBounds(paramsX + paramsW + paramsP, paramsY, paramsW, paramsH);
 	grainSld.setBounds(paramsX + paramsW * 2 + paramsP * 2, paramsY, paramsW, paramsH);
@@ -226,7 +226,7 @@ void SmsynthAudioProcessorEditor::resized()
 	dSld.setBounds(adsrX + adsrW + adsrP, adsrY, adsrW, adsrH);
 	sSld.setBounds(adsrX + adsrW * 2 + adsrP * 2, adsrY, adsrW, adsrH);
 	rSld.setBounds(adsrX + adsrW * 3 + adsrP * 3, adsrY, adsrW, adsrH);
-	pingBtn.setBounds(670, 230, 100, 100);
+	pingBtn.setBounds(370, 260, 100, 100);
 }
 
 bool SmsynthAudioProcessorEditor::isInterestedInFileDrag(const juce::StringArray& files)

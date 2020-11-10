@@ -12,8 +12,18 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import SoundMusic as sm
 import multiprocessing as mp
 
+class Worker(QtCore.QThread):
+    def __init__(self, i, o, svm):
+        super(QtCore.QThread, self).__init__()
+        self.i = i
+        self.o = o
+        self.svm = svm
 
-class Ui_MainWindow(object):
+    def run(self):
+        sm.generation.stereo(self.i,self.o,self.svm)
+
+
+class Ui_MainWindow(QtWidgets.QWidget):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(622, 459)
@@ -518,10 +528,15 @@ class Ui_MainWindow(object):
         # Generation
         sm.generation.VERB_LEN = eval(self.eVerbLen.text()) / 100
 
-        # Call Stuff
-        #proc = mp.Process(target=sm.generation.stereo, args=(self.eInput.text(), self.eOutput.text(), self.eSvm.text()))
-        #proc.start()
-        sm.generation.stereo(self.eInput.text(), self.eOutput.text(), self.eSvm.text())
+        worker = Worker(self.eInput.text(), self.eOutput.text(), self.eSvm.text())
+        worker.start()
+        self.pushButton.setEnabled(False)
+        self.pushButton.setText("Working...")
+        while not worker.isFinished():
+            QtWidgets.QApplication.processEvents()
+
+        self.pushButton.setEnabled(True)
+        self.pushButton.setText("Generate")
         
 
 def main():
@@ -530,6 +545,10 @@ def main():
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    sm.dragfiles.lineEdit_dragFile_injector(ui.eInput)
+    sm.dragfiles.lineEdit_dragFile_injector(ui.eOutput)
+    sm.dragfiles.lineEdit_dragFile_injector(ui.eSvm)
+
     MainWindow.show()
     sys.exit(app.exec_())
 

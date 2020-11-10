@@ -486,13 +486,17 @@ def fast_evolve(synth_class, lso, model):
             if len(possible_parents) < 2:
                 possible_parents = copy.copy(population)
             
+            ws = np.array([ss[1] for ss in possible_parents])
+            ws += min(np.min(ws), 0)
             parent1 = random.choices(
                 possible_parents,
-                weights=[ss[1] for ss in possible_parents],
+                weights=ws,
                 k=1
             )[0]
             possible_parents.remove(parent1)
 
+            ws = np.array([ss[1] for ss in possible_parents])
+            ws += min(np.min(ws), 0)
             parent2 = random.choices(
                 possible_parents,
                 weights=[ss[1] for ss in possible_parents],

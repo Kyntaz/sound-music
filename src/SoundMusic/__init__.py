@@ -14,3 +14,4 @@ import SoundMusic.smconfig
 import SoundMusic.gensound
 import SoundMusic.smcreator
 import SoundMusic.topsynth
+import SoundMusic.dragfiles

@@ -369,6 +369,8 @@ def song_fit(struct):
 def evolve_song(structs):
     nstructs = len(structs) - 1
     pop = [[make_rule(nstructs) for _ in range(RULE_STEP)] for _ in range(POPULATION)]
+    last_gram = None
+    last_score = - np.inf
     for _ in range(GENERATIONS):
         best_gram = pop[0]
         best_score = - np.inf
@@ -379,8 +381,13 @@ def evolve_song(structs):
             if score > best_score:
                 best_gram = gram
                 best_score = score
+        if best_score < last_score:
+            best_gram = last_gram
+            best_score = last_score
         print(best_score)
-        pop = [[make_rule(nstructs) for _ in range(RULE_STEP)] + best_gram for _ in range(POPULATION)] + [best_gram]
+        pop = [[make_rule(nstructs) for _ in range(RULE_STEP)] + best_gram for _ in range(POPULATION)]
+        last_gram = best_gram
+        last_score = best_score
 
     seq = make_sequence(best_gram)
     return seq2song(seq, structs)

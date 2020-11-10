@@ -225,7 +225,7 @@ def sevolve(so, dur, amp):
             new_population.append([child, lval])
 
         population = new_population
-        print(max(fit for _,fit in population))
+        print(min(fit for _,fit in population))
 
     return join_drones([ind[0] for ind in population], dur, amp)
 
