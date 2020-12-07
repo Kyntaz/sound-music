@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 
 import SoundMusic as sm
 
-SAMPLE_RATE = 22100
+SAMPLE_RATE = 22050
 
 class SoundObject:
     def __init__(self, samples, t=0, *, normalize=True):

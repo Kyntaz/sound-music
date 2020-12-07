@@ -9,8 +9,8 @@ import copy
 import sklearn as skl
 
 # Settings for the Evolutionary Algorithm:
-GENERATIONS = 100
-POPULATION = 20
+GENERATIONS = 3
+POPULATION = 3
 ELITISM = 0.5
 AVG_MUTATIONS = 3
 VAR_MUTATIONS = 5
